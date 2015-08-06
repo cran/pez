@@ -2,8 +2,8 @@
 #'
 #' This function performs Generalized Linear Mixed Models for binary
 #' and continuous phylogenetic data, estimating regression
-#' coefficients with approximate standard errors. It is a modeled
-#' after \code{\link[lme4:lmer]{lmer}} but is more general by allowing
+#' coefficients with approximate standard errors. It is modeled after
+#' \code{\link[lme4:lmer]{lmer}} but is more general by allowing
 #' correlation structure within random effects; these correlations can
 #' be phylogenetic among species, or any other correlation structure,
 #' such as geographical correlations among sites. It is, however, much
@@ -22,7 +22,9 @@
 #' named in formula. The data frame should have long format with
 #' factors specifying species and sites. \code{communityPGLMM} will
 #' reorder rows of the data frame so that species are nested within
-#' sites.
+#' sites. Please note that calling
+#' \code{\link{as.data.frame.comparative.comm}} will return your
+#' \code{comparative.comm} object into this format for you.
 #' @param family either \code{gaussian} for a Linear Mixed Model, or
 #' \code{binomial} for binary dependent data.
 #' @param sp a \code{\link{factor}} variable that identifies species
@@ -168,16 +170,13 @@
 #' \item{convcode}{the convergence code provided by \code{\link{optim}}}
 #' \item{niter}{number of iterations performed by \code{\link{optim}}}
 #' @note These function \emph{do not} use a
-#' \code{\link{comparative.comm}} object; the power of this method
-#' comes from deciding your own parameters parameters to be determined
-#' (the data for regression, the random effects, etc.) such that this
-#' is emphatically a feature, not a bug! Bear in mind that
-#' \code{species(c.c.obj)} will return your species (for argument
-#' \code{sp}), \code{comm(c.c.obj)} your community (site) data (for
-#' argument \code{site}), and \code{cophenetic(tree(c.c.obj))} your
-#' phylogenetic covariacne matrix. The examples below are extremely
-#' thorough and really help explain the method; please take a look at
-#' them.
+#' \code{\link{comparative.comm}} object, but you can use
+#' \code{\link{as.data.frame.comparative.comm}} to
+#' create a \code{data.frame} for use with these functions. The power
+#' of this method comes from deciding your own parameters parameters
+#' to be determined (the data for regression, the random effects,
+#' etc.), and it is our hope that this interface gives you more
+#' flexibility in model selection/fitting.
 #' @author Anthony R. Ives, cosmetic changes by Will Pearse
 #' @references Ives, A. R. and M. R. Helmus. 2011. Generalized linear
 #' mixed models for phylogenetic analyses of community
@@ -317,15 +316,15 @@
 #' # name the simulated species 1:nspp and sites 1:nsites
 #' rownames(Y) <- 1:nspp
 #' colnames(Y) <- 1:nsite
-#' 
+#'
 #' par(mfrow = c(3, 1), las = 1, mar = c(2, 4, 2, 2) - 0.1)
 #' matplot(t(X), type = "l", ylab = "X", main = "X among sites")
 #' hist(b0, xlab = "b0", main = "b0 among species")
 #' hist(b1, xlab = "b1", main = "b1 among species")
 #'
-#' par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-#' if(require(plotrix))
-#'     color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
+#' #Plot out; you get essentially this from plot(your.pglmm.model)
+#' image(t(Y), ylab = "species", xlab = "sites", main = "abundance",
+#' col=c("black","white"))
 #' 
 #' # Transform data matrices into "long" form, and generate a data frame
 #' YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -357,7 +356,14 @@
 #' 
 #' # random effect for site
 #' re.site <- list(1, site = dat$site, covar = diag(nsite))
-#' 
+#'
+#' simple <- communityPGLMM(Y ~ X, data = dat, family = "binomial", sp
+#' = dat$sp, site = dat$site, random.effects = list(re.site),
+#' REML=TRUE, verbose=FALSE)
+#'
+#' # The rest of these tests are not run to save CRAN server time;
+#' # - please take a look at them because they're *very* useful!
+#' \dontrun{ 
 #' z.binary <- communityPGLMM(Y ~ X, data = dat, family = "binomial",
 #' sp = dat$sp, site = dat$site, random.effects = list(re.1, re.2,
 #' re.3, re.4), REML = TRUE, verbose = FALSE)
@@ -368,11 +374,7 @@
 #'
 #' # test statistical significance of the phylogenetic random effect
 #' # on species slopes using a likelihood ratio test
-#' # communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
-#'
-#' # The rest of these tests are not run to save CRAN server time;
-#' # - please take a look at them because they're very useful!
-#' \dontrun{
+#' communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
 #' 
 #' # extract the predicted values of Y
 #' communityPGLMM.predicted.values(z.binary, show.plot = TRUE)
@@ -442,6 +444,7 @@ communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NUL
 #' @rdname pglmm
 #' @importClassesFrom Matrix RsparseMatrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom stats pchisq model.frame model.matrix model.response lm var optim pnorm
 #' @export
 communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian", sp = NULL, 
 	site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-8, 
@@ -571,24 +574,16 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
@@ -754,9 +749,10 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	AIC <- -2 * logLik + 2 * k
 	BIC <- -2 * logLik + k * (log(n) - log(pi))
 
+        #NOTE: the nested/non-nested returns are 'swapped' here, which looks dodgy but is better than them being the wrong way round!
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2r = s2r, s2n = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
+		s2n = s2r, s2r = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = NULL, nested = nested, 
 		sp = sp, site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 
@@ -770,12 +766,14 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 # communityPGLMM.binary
 ######################################################
 ######################################################
-#' calculates the statistical significance of the random effects in
-#' the generalized linear mixed model from the marginal profile
-#' likelihood.
+#' \code{communityPGLMM.binary} calculates the statistical
+#' significance of the random effects in the generalized linear mixed
+#' model from the marginal profile likelihood.
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom methods as show
+#' @importFrom stats model.frame model.matrix model.response glm binomial optim pchisq
 #' @export
 communityPGLMM.binary <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, 
 	random.effects = list(), REML = TRUE, s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40, 
@@ -994,24 +992,16 @@ if (is.null(sp) | is.null(site))
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
@@ -1164,7 +1154,7 @@ if (is.null(sp) | is.null(site))
 
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2r = s2r, s2n = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
+		s2n = s2r, s2r = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested = nested, sp = sp, 
 		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"
@@ -1180,12 +1170,13 @@ if (is.null(sp) | is.null(site))
 #' \code{communityPGLMM.binary.LRT} tests statistical significance of
 #' the phylogenetic random effect on species slopes using a likelihood
 #' ratio test
-#' @param x \code{communityPGLMM} model to be tested
 #' @param re.number which \code{random.effect} in \code{x} to be
 #' tested
+#' @param x \code{communityPGLMM} object
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom methods as show
 #' @export
 communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 
@@ -1368,6 +1359,8 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 #' covariance matrix structure (V) when you specify random effects.
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
+#' @importFrom methods as
+#' @importFrom stats model.frame model.matrix model.response
 #' @param ss which of the \code{random.effects} to produce
 #' @rdname pglmm
 #' @export
@@ -1457,24 +1450,16 @@ if (is.null(sp) | is.null(site))
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
@@ -1532,6 +1517,7 @@ if (is.null(sp) | is.null(site))
 #' @param digits minimal number of significant digits for printing, as
 #' in \code{\link{print.default}}
 #' @param object communityPGLMM object to be summarised
+#' @importFrom stats printCoefmat
 #' @export
 summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") - 3), ...) {
 	if (object$family == "gaussian") {
@@ -1594,16 +1580,18 @@ print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ..
 ######################################################
 #' @rdname pglmm
 #' @method plot communityPGLMM
-#' @importFrom plotrix color2D.matplot
+#' @importFrom graphics par image
+#' @importFrom stats reshape
 #' @export
 plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
-	W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
-	Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
-	Y <- Y[, 2:dim(Y)[2]]
-
-	par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-
-	color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Observed values")
+    #Wrangle data
+    W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
+    Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
+    Y <- Y[, 2:dim(Y)[2]]
+    
+    #Wrangle for image
+    Y <- t(Y)
+    image(x=seq(1,nrow(Y)), y=seq(1,ncol(Y)), z=Y, ylab = "species", xlab = "sites", main = "Observed values", col=c("black","white"))
 }
 
 
@@ -1617,8 +1605,9 @@ plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...
 #' "binomial"), these values are in the logit-1 transformed space.
 #' @rdname pglmm
 #' @param show.plot if \code{TRUE} (default), display plot
+#' @importFrom graphics par
+#' @importFrom stats reshape
 #' @export
-#' @importFrom plotrix color2D.matplot
 communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 
 	if (x$family == "gaussian") {
@@ -1640,8 +1629,8 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 		Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 		Y <- Y[, 2:dim(Y)[2]]
 		par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-
-		color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Predicted values")
+                Y <- t(Y)
+                image(x=seq(1,nrow(Y)), y=seq(1,ncol(Y)), z=Y, ylab = "species", xlab = "sites", main = "Predicted values", col=c("black","white"))
 	}
 	return(predicted.values)
 }

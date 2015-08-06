@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{pez-intro}
+% \VignetteIndexEntry{pez-intro}
 %\VignettePackage{pez}
 %\VignetteEngine{knitr::knitr}
 \documentclass[12pt]{article}
@@ -19,11 +19,7 @@
 \maketitle
 \tableofcontents
 <<include=FALSE>>=
-require(plotrix)
 require(pez)
-require(ape)
-require(picante)
-require(methods)
 options(width=40)
 @ 
 \section{Preamble}
@@ -31,8 +27,8 @@ You can install \emph{pez} by typing \texttt{install.packages("pez")},
 and get a listing of the functions in the package by typing
 \texttt{library(help=pez)}. If you find any bugs, or have any feature
 requests for the package, please use
-\href{http://github.com/willpearse/pez/issues}{the online tracker}
-at. Indeed, please contribute to the package using at its
+\href{http://github.com/willpearse/pez/issues}{the online
+  tracker}. Indeed, please contribute to the package using at its
 \href{http://github.com/willpearse/pez/issues}{GitHub site}---help is
 always welcome! If you need help, please email the
 \href{https://groups.google.com/forum/#!forum/pez_users}{user mailing
@@ -45,7 +41,20 @@ files for each function); notably \emph{caper} \citep{Orme2013} and
 \emph{picante} \citep{Kembel2010} but many others as well. Please cite
 the authors of these packages in your publications so that their
 hard-work is rewarded!
-\clearpage
+
+The functions within \emph{pez} are grouped into families; thus, while
+there is no \texttt{pez.metric} function, there is a help-file with
+this title that describes over thirty different functions. Looking for
+the help file for each of these functions will take you to combined,
+`overview' help-file.
+
+Often, \emph{pez} functions will return warnings (and sometimes error
+messages!) because certain metrics or methods are not appropriate for
+the kinds of data you are working with. Indeed, you will see such
+warnings in this vignette. These are not \emph{bugs}; one simply
+cannot calculate some metrics without fully resolved phylogenies, and
+some models do not make sense without certain kinds of data.
+%\clearpage
 \section{Data formats in \emph{pez}}
 \emph{pez} functions work with \texttt{comparative.comm} objects
 (\emph{comparative community ecology}). These are designed to help
@@ -57,10 +66,12 @@ Below we load \emph{pez}, some example data that comes with it, and
 then make a \texttt{comparative.comm} object. You can examine the
 phylogeny (\texttt{tree}), community data (\texttt{comm}), and trait
 data (\texttt{data}) that went into making dataset for yourself,
-although all the data types are explained in more detail below. Below
-we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
+although all the data types are explained in more detail below. A
+phylogeny and a community matrix are all you need to make a
+\texttt{comparative.comm} object; everything else is optional. Below
+we use the \citet{Helmus2014} dataset to show \emph{pez}'s features.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 library(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
@@ -73,25 +84,24 @@ data and community data. The same goes for the phylogeny, and for
 sites with environmental data. \emph{pez} will warn you about the loss
 of species or traits when you print the object to screen, and while
 it's making the comparative.comm object (unless you set the argument
-\texttt{warm=FALSE}).
+\texttt{warn=FALSE}).
 
 You can also subset your comparative.comm object to exclude certain
 species or sites, in much the same way you can a
 \texttt{data.frame}. Dropping a site that contained the only instance
 of a species will remove it from dataset, and \emph{pez} will not warn
-you about this unless you specify \texttt{[,,warn=TRUE]}. For example:
+you about this unless you specify \texttt{[,,warn=TRUE]}.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 site.subset <- data[1:5,]
 spp.subset <- data[,1:3]
-data[-1,,warn=TRUE]
 @
 
 \emph{pez} makes it easier to work with and manipulate datasets. The
 functions \texttt{species} and \texttt{sites} are safe ways of
 manipulating all the parts of your data at the same time. For example:
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 species(data)[1:2]
 species(data)[1:2] <- c("new", "names")
 sites(data)[1:2] <- c("newer", "names")
@@ -103,30 +113,30 @@ traits(data)$new.trait <- NULL
 The final example above showed you can work with the internal
 components of a \texttt{comparative.comm} to get things done quicker,
 in this case removing all species that were only recorded five times
-in the dataset. The help entry for \texttt{cc.manip} contains more
-examples, and \texttt{plot.comparative.comm} is a quick plotting
+or fewer in the dataset. The help entry for \texttt{cc.manip} contains
+more examples, and \texttt{plot.comparative.comm} is a quick plotting
 tool. We have also provided the \texttt{comm},
 \texttt{phy}(/\texttt{tree}), \texttt{traits}, and \texttt{env}
 wrappers to examine and manipulate the community matrix, phylogeny,
 trait data, and environmental data, slots in your
-\texttt{comparative.comm} objects. We give some examples above, and
-you can find more in the help file for \texttt{cc.manip}. By using
-these wrappers, as opposed to interacting directly with the slots in
-your \texttt{comparative.comm} object, you ensure your species and
-sites remain consistent across your data, and make your code a little
-easier to read. Internally, your trait data are stored in the
-\texttt{data} slow; this means that \texttt{comparatve.comm} is
-compatible with the \texttt{caper} package. Anything you can do in
-that (\emph{e.g.}, PGLS regression, comparative modelling and
-simulation) can be done using you data in \emph{pez} without
-modification.
-\clearpage
+\texttt{comparative.comm} objects (\emph{e.g.}, \texttt{phy(data)}
+would return your phylogeny). We give some examples above, and you can
+find more in the help file for \texttt{cc.manip}. By using these
+wrappers, as opposed to interacting directly with the slots in your
+\texttt{comparative.comm} object, you ensure your species and sites
+remain consistent across your data, and make your code a little easier
+to read. Internally, your trait data are stored in the \texttt{data}
+slot; this means that \texttt{comparative.comm} is compatible with the
+\texttt{caper} package. Anything you can do in that (\emph{e.g.}, PGLS
+regression, comparative modelling and simulation) can be done using
+you data in \emph{pez} without modification.
+%\clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
 according to the scheme outlined by \citet{Pearse2014review}:
-\texttt{shape}, \texttt{evenness}, \texttt{dispersion}, and
-\texttt{dissimilarity}. Shape metrics measure the structure of an
-community phylogeny, while evenness metrics additionally incorporate
+\texttt{pez.shape}, \texttt{pez.evenness}, \texttt{pez.dispersion},
+and \texttt{pez.dissimilarity}. Shape metrics measure the structure of
+a community phylogeny, while evenness metrics additionally incorporate
 species abundances. Dispersion metrics examine whether phylogenetic
 biodiversity in an assemblage differs from the expectation of random
 assembly from a given set of species. Finally, dissimilarity measures
@@ -141,10 +151,10 @@ data. Working with \texttt{shape}, \texttt{evenness}, and
 \texttt{dispersion} metrics is exactly the same, so below we only show
 \texttt{shape}.
 
-<<tidy=TRUE>>=
-shape.output <- shape(data)
-dim(coef(shape.output))
-coef(shape.output)[1:3,1:3]
+<<tidy=TRUE, size="small">>=
+shape.output <- pez.shape(data)
+dim(shape.output)
+shape.output[1:3,1:3]
 @
 
 Both \texttt{shape} and \texttt{evenness} metrics, by default, only
@@ -159,13 +169,14 @@ explanatory power from phylogeny and traits, following
 \citet{Cadotte2013} (see below), and you can compare the output of
 different traitgram values. Not all metrics can meaningfully be
 calculated using external distance matrices, traitgrams, or
-square-rooted phylogenies, however.
+square-rooted phylogenies, however, and such metrics will not be
+calculated (and no errors will be displayed).
 
-<<tidy=TRUE>>=
-sqrt <- shape(data, sqrt.phy=TRUE)
-traits <- shape(data, traitgram=1) #traits alone
-traits <- shape(data, traitgram=c(0,0.5))#phylogeny and both
-traits <- shape(data, ext.dist=as.dist(cophenetic(data$phy)))
+<<tidy=TRUE, size="small">>=
+sqrt <- pez.shape(data, sqrt.phy=TRUE)
+traits <- pez.shape(data, traitgram=1) #traits alone
+traits <- pez.shape(data, traitgram=c(0,0.5))#phylogeny and both
+traits <- pez.shape(data, ext.dist=as.dist(cophenetic(phy(data))))
 @ 
 
 \texttt{dissimilarity} works slightly differently, because it returns
@@ -175,11 +186,26 @@ a list of distance matrices that describe your community data.
 fraction of shared branch length. This is not how it is in other
 packages, but remember: the function is called \texttt{dissimilarity}!
 
-<<tidy=TRUE, fig.width=6, fig.height=4>>=
-dist <- dissimilarity(data, "phylosor")
+<<tidy=TRUE, fig.width=6, fig.height=4, size="small">>=
+dist <- pez.dissimilarity(data, "phylosor")
 plot(hclust(dist$phylosor))
-@ 
-\clearpage
+@
+
+It is possible to calculate any arbitrary combination of metrics using
+\texttt{generic.metrics}, and compare those metrics with values
+derived from null distributions (\texttt{generic.null}). You can get
+a list of the metrics you can calculate by looking at
+\texttt{?pez.metrics}; there are many, but they all follow the same
+naming (\texttt{.name}) and argument conventions. Note that you can
+also pass arguments (external distance matrices, etc.) to all the
+metrics you calculate.
+
+<<tidy=TRUE, size="small">>=
+metrics <- generic.metrics(data, c(.mpd,.pse,.ses.mpd))
+#null.comparisons <- generic.null(data, c(.mpd,.pse))
+metrics <- generic.metrics(data, c(.mpd,.mntd), dist=as.dist(cophenetic(phy(data))))
+@
+%\clearpage
 \section{Eco-evolutionary regression}
 Calculating metric values is useful, but often we want to make
 statistical models. \emph{pez} features a set of regression techniques,
@@ -196,7 +222,7 @@ distances can be based on any distance metric you can define. These
 are useful to explore your data, but also because the trait results
 are used in the \emph{fingerprint regression} described below.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 phy <- eco.phy.regression(data, permute=10)
 trait <- eco.trait.regression(data, permute=10, method="quantile", tau=c(0.25,0.5,0.7))
 trait <- eco.trait.regression(data, altogether=FALSE)
@@ -260,9 +286,8 @@ traits. By creating a regression such as this with your data, you are
 directly relating the present-day ecology of species to their
 evolutionary history.
 
-<<warning=FALSE, tidy=TRUE>>=
+<<warning=FALSE, tidy=TRUE, size="small">>=
 model <- fingerprint.regression(data, eco.permute=10)
-
 @
 
 Once you've performed a \emph{fingerprint regression} (the name is new
@@ -274,7 +299,8 @@ independent, either ecologically or evolutionarily, which could lead
 to bias. Examine the \texttt{\$eco} and \texttt{\$evo} slots in your
 output to see what it plotted where; you can plot these names by
 provide these two values and \texttt{traits(data)} to the function
-\texttt{text}.
+\texttt{text}. In our example here the results are not particularly
+interesting as we have only two traits! 
 
 It is worth pausing to consider the interpretation of various
 outcomes. A positive relationship would indicate a combination of
@@ -290,7 +316,10 @@ would be difficult to interpret because it would indicate a
 combination of niche conservatism (environmental filtering on
 conserved functional traits) and trait patterns of dissimilar labile
 traits within communities that could be generated any number of ways
-or result from stochastic processes.
+or result from stochastic processes. A further complication, of
+course, is that different measures of phylogenetic signal mean very
+different things; ensure that you understand how to interpret the
+metric you are using!
 
 An important caveat is that multiple processes may contribute to
 observed patterns making interpretation difficult
@@ -315,7 +344,7 @@ acted as an environmental filter causing fire tolerant species to
 assemble in fire-dominated habitats and fire-intolerant species to
 assemble in habitats lacking fire.
 
-\clearpage
+%\clearpage
 \section{Functional phylogenetic distances and traitgrams}
 
 Taxa differ both functionally and phylogenetically, a fact that is
@@ -353,19 +382,19 @@ functional distances (e.g. $p = 2$ gives a Euclidean combination).
 This distance matrix can be computed using the
 \texttt{funct.phylo.dist} function.  For example, for $a = 0.5$, and
 $p = 2$, we have,
-<<FPDist>>=
+<<FPDist, size="small">>=
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
 @ %
 \noindent One use of these distance matrices is in community
 randomisation tests \citep{Cadotte2013}, an example of which can be
-computed using the following code,
-<<sesFPD>>=
-ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
+computed using the following code:
+<<sesFPD, size="small">>=
+ses.mfpd.data <- .ses.mpd(data, dist=fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
 @
 
-\section{Phylogenetic Generalised Linear Models (PGLMMs)}
-
+%\clearpage
+\section{Phylogenetic Generalised Linear Mixed Models}
 Phylogenetic Generalised Linear Models (PGLMMs) are powerful tools
 that permit detailed tests of what structures ecological
 communities. They were originally intended to examine phylogenetic
@@ -387,7 +416,7 @@ approach. What follows is a greatly condensed version of the second
 section; the help file contains much more information of why and how
 each step of the simulation works.
 
-<<<pglmmSim, tidy=TRUE>>=
+<<pglmmSim, tidy=TRUE, size="small">>=
 # Basic parameters
 nspp <- 15; nsite <- 10
 # Fixed effects
@@ -424,15 +453,20 @@ rownames(Y) <- 1:nspp; colnames(Y) <- 1:nsite
 Arguably the most important thing for you to understand about the
 above is what \texttt{Y} represents: it is a matrix where each species
 has its own row, and each site its own column (see the final
-line). Were we to take the transpose of it (\texttt{t}), it would be
-the same format as a \texttt{comparative.comm}'s community matrix.
+line). When we take the transpose of it, we have what we need to
+create a \texttt{comparative.comm} object.
 
 We will now transform that data such that it is in a `long
 format'---each element in the community matrix will become a row in a
 \texttt{data.frame} and we will perform a regression (a PGLMM, to be
-precise!) on that data.
+precise!) on that data. This long format is important because PGLMM is
+sufficiently flexible that it can be fitted to data that don't fit
+into the \texttt{comparative.comm} format. An example is
+interaction-network data, of which there is an example in the help
+file. Calling \texttt{as.data.frame} on a \texttt{comparative.comm}
+object will convert your data into this long-format structure for you.
 
-<<pglmmModel, tidy=TRUE>>=
+<<pglmmModel, tidy=TRUE, size="small">>=
 # Transform data into 'long' format
 # - Occurrence data
 YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -484,6 +518,7 @@ check a more recent (but basic) overview
 \citep{Pearse2014review}. Powerful methods mean you get to make
 powerful choices about what you analyse: this is a good thing!
 
+%\clearpage
 \section{Simulation}
 
 A good simulation is one that does exactly what you want it to do, and
@@ -509,7 +544,7 @@ communities are excellent for use as null models to compare with your
 own data, and as such they take a \texttt{comparative.comm} object as
 an argument to generate communities that match your own data.
 
-\clearpage
+%\clearpage
 \begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -565,6 +600,12 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
 \bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
   \emph{Ecology} \textbf{93}, S31--S43.
+
+\bibitem[{Helmus \emph{et~al.}(2014) Helmus, Mercado-Silva \&
+    Zanden(2014)}]{Helmus2014} Helmus, M.R., Mercado-Silva, N., \&
+  Zanden, M.J.V. (2014) Subsidies to predators, apparent competition
+  and the phylogenetic structure of prey communities \emph{Oceologia}
+  \textbf{173}, 997--1007.
 
 \bibitem[{Ives \& Helmus(2011)}]{Ives2011} Ives, A.R. \& Helmus,
   M.R. (2011) Generalized linear mixed models for phylogenetic

@@ -7,7 +7,6 @@
 #' null distribution.  Lighter shades of gray give larger intervals
 #' with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95
 #' = 90\%, 0.25-0.75 = 50\%.
-#'
 #' @param object a \code{\link{comparative.comm}} object, with
 #' presence-absence community data.
 #' @param type character string giving the type of distance matrix on
@@ -22,7 +21,10 @@
 #' @note No serious checking of user-provided matrices is performed;
 #' this is both useful and dangerous!
 #' @seealso \code{\link{sim.phy}} \code{\link{scape}}
-#' @return TODO
+#' @return \code{matrix} with quantiles of mean pairwise distances for
+#' all quantiles of of mean pairwise distance, with one row for the
+#' range of species richnesses in the data (see column SpRich).
+#' @author Steve Walker, wrappers by Will Pearse
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
@@ -33,24 +35,34 @@
 #' sims <- ConDivSim(data)
 #' #...without traits...
 #' sims.phy <- ConDivSim(data, type="phy")
+#' @importFrom ape cophenetic.phylo
+#' @importFrom stats quantile sd
+#' @importFrom graphics polygon lines points text
+#' @importFrom grDevices grey
 #' @export
 ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALSE){
     #Assertions and argument handling
     if(!inherits(object, "comparative.comm"))
         stop("'data' must be a comparative community ecology object")
-    Dist <- NULL
-    if(type == "traits")
-        if(is.null(object$data)) {
-            stop("'object' must contain trait data if using a trait matrix")
-        } else {
-            dist <- as.matrix(dist(object$data))
-        }
-    if(type == "phy")
-        dist <- cophenetic(object$phy)
-    if(is.null(dist))
+    if(is.matrix(type)){
         if(nrow(type)==length(object$phy$tip.label) & nrow(type)==ncol(type))
             dist <- type else stop("'Provided distance matrix is of incorrect dimension'")
-    
+    } else {
+        if(inherits(type, "dist")){
+            dist <- as.matrix(type)
+            if(nrow(dist)!=length(object$phy$tip.label) | nrow(dist)!=ncol(dist))
+                stop("'Provided distance matrix is of incorrect dimension'")
+        } else {
+            switch(type,
+                   "traits" = {
+                       if(is.null(object$data)) 
+                           stop("'object' must contain trait data if using a trait matrix")
+                       dist <- as.matrix(dist(object$data))
+                   },
+                   "phy" = dist <- cophenetic.phylo(object$phy),
+                   stop("Unknown 'type' of analysis"))
+        }
+    }
     object$comm <- round(object$comm)
     if(!all(object$comm %in% c(0L, 1L))) stop("Community data must be presence-absence")
     
@@ -89,7 +101,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     ## calculate the observed mean pairwise distance for the community
     ## (with the unweighted method from mpd in picante, it means only 
     ## the lower triangle!)
-    MPD.obs <- mpd(object$comm, dist, abundance.weighted = FALSE)
+    MPD.obs <- .mpd(object, dist=as.dist(dist), abundance.weighted = FALSE)
     
     ## Loop on the species richness range to calculate the random 
     ## expectations of mean pairwise distance
@@ -165,8 +177,6 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     return(Randomiz)
 }
 
-#TODO: NULL
-#
 #' Produces simulated communities based on species attributes
 #' 
 #' \code{trait.asm} calculates phylogenetic biodiversity metrics
@@ -192,6 +202,8 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
 #'  data(laja)
 #'  trait.asm(laja$fish.pref)
 #' }
+#' @importFrom stats rbinom optimize
+#' @export
 trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,Pscale=1)
 {
     a<-a[!is.na(a)]
@@ -294,10 +306,11 @@ traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
 
 ##' First axis of a principal components analysis
 ##'
-##' A very soft wrapper for \code{\link{princomp}}
+##' \code{princompOne} A very soft wrapper for \code{\link{princomp}}
 ##' 
 ##' @param x A matrix-like object
 ##' @return \code{princompOne}: the first axis of a PCA
 ##' @rdname traitgram.cc
+##' @importFrom stats princomp
 ##' @export
 princompOne <- function(x, ...) princomp(x, ...)$scores[,1]

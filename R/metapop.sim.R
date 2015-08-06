@@ -1,8 +1,5 @@
 #' Simulate a meta-community (and its phylogeny)
 #'
-#' Simulate a meta-community (and the resulting phylogeny) based on
-#' responses to environmental gradients
-#'
 #' \code{sim.meta.comm} simulates species moving through a
 #' metacommunity. At each time-step each cell's next abundance for
 #' each species is \code{env.quality} - \code{current.abundance} +
@@ -12,7 +9,7 @@
 #' want half-species (these are individuals), and keeping everything
 #' in Poisson makes it easier to compare the relative rates of
 #' everything.
-#'
+#' 
 #' \code{sim.meta.phy.comm} As above, but with a simulation of
 #' phylogeny as well - there are no additional extinction parameters,
 #' since extinction happens as a natural consequence of ecological
@@ -40,15 +37,18 @@
 #' @note \code{\link{scape}} is a much more sophisticated simulation
 #' of the biogeography, but requires you to supply a phylogeny. You
 #' pays your money, you makes your choice.
-#' @return List with the species abundances (as a 3D array) and the
-#' environmental quality (carrying capacities) for
-#' \code{sim.meta.comm}. For \code{sim.meta.phy.comm}, also a
-#' phylogeny of species and a lookup table from the abundance array to
-#' the phylogeny.
+#' @return For \code{sim.meta.comm} a list with a species-site matrix
+#' as the first slot, and the environment as the second. Rownames of
+#' the site-species are the List with the x and y co-ordinates of the
+#' simulation grid pasted together; colnames are arbitrary species
+#' names. \code{sim.meta.comm}, a \code{\link{comparative.comm}}
+#' object (since we have now simulated a phylogeny), with the same
+#' naming convention for the site names.  phylogeny.
 #' @author Will Pearse
 #' @rdname sim.meta
 #' @name sim.meta
 #' @seealso \code{\link{sim.phy}} \code{\link{scape}}
+#' @importFrom stats rpois rbinom
 #' @export
 sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.lam=10, abund.lam=5, stoch.lam=1){
     #Setup environment and abundances
@@ -85,8 +85,13 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
         abundance[abundance < 0] <- 0
     }
     
-    #Return
-    return(list(species=abundance, environment=env))
+    #Format output and return
+    comm <- apply(abundance, 3, unlist)
+    t <- dim(abundance)
+    t <- expand.grid(seq_len(t[1]), seq_len(t[2]))
+    rownames(comm) <- paste(t[,1], t[,2], sep=".")
+    env <- data.frame(as.numeric(env), row.names=rownames(comm))
+    return(list(comm=comm, environment=env))
 }
 
 #' \code{sim.meta.phy.comm} simulate a (sort of) meta-community
@@ -94,12 +99,13 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
 #' @param p.speciate probabilty that, at each timestep, a species will
 #' speciate. A species can only speciate, migrate, or reproduce if it
 #' has individuals!
-#' @return List with the species abundances (as a 3D array), the
-#' environmental quality (carrying capacities), the phylogeny of
-#' species (which generates warnings when plotted, don't ask me why!),
-#' and a lookup table from the abundance array to the phylogeny.
+#' @return \code{sim.meta.phy.comm} \code{\link{comparative.comm}}
+#' object that describes the data; note that the rownames of the
+#' community object refer to the \code{row.column} of the data in the
+#' simulated grid assemblages.
 #' @rdname sim.meta
 #' @author Will Pearse
+#' @importFrom stats rpois rbinom runif
 #' @export
 sim.meta.phy.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.3, env.lam=10, abund.lam=5, stoch.lam=1, p.speciate=0.05){
     #Setup environment and abundances
@@ -167,9 +173,17 @@ sim.meta.phy.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.3, env
         abundance[abundance < 0] <- 0
     }
     
-    #Turn into ape::phylo and return
+    #Produce ape::phylo
     species <- seq(nrow(edge)) %in% phy.abund.lookup$phy
     tree <- edge2phylo(edge, species, el=edge.length)
     phy.abund.lookup$phy[order(phy.abund.lookup$phy)] <- tree$tip.label
-    return(list(species=abundance, environment=env, tree=tree, lookup=phy.abund.lookup))
+
+    #Format output and return
+    comm <- apply(abundance, 3, unlist)
+    colnames(comm) <- phy.abund.lookup[,1]
+    t <- dim(abundance)
+    t <- expand.grid(seq_len(t[1]), seq_len(t[2]))
+    rownames(comm) <- paste(t[,1], t[,2], sep=".")
+    env <- data.frame(as.numeric(env), row.names=rownames(comm))
+    return(comparative.comm(tree, comm, env=env, force.root=1))
 }

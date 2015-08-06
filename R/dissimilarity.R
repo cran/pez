@@ -23,8 +23,9 @@
 #' @param metric default (\code{all}) calculates everything;
 #' individually call-able metrics are: \code{unifrac}, \code{pcd},
 #' \code{phylosor}, \code{comdist}.
-#' @param abundance If TRUE (default) metrics are calculated
-#' incorporating species abundances (currently only comdist)
+#' @param abundance.weighted If TRUE (default is FALSE) metrics are
+#' calculated incorporating species abundances; only \code{comdist}
+#' can incorporate abundances
 #' @param permute Number of permutations for metric (currently only
 #' for \code{pcd})
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
@@ -37,10 +38,11 @@
 #' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
 #' causing analysis on a distance matrix reflecting both traits and
 #' phylogeny (0 --> only phylogeny, 1 --> only traits; see
-#' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{shape} iterates across them and returns a \code{data.frame}
-#' with coefficients from each iteration. See `details' for details
-#' about different metric calculations when a distance matrix is used.
+#' \code{funct.phylo.dist}). Unlike other metric wrapper functions,
+#' \code{dissimilarity} does not accept a vector of traitgram values;
+#' call the function many times to get these. This is simply because
+#' it can take so long: you're probably better off
+#' looping/\code{apply}-ing over this function yourself.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ext.dist Supply an external species-level distance matrix
@@ -48,11 +50,9 @@
 #' distance matrices in different metric calculations.
 #' @param ... additional parameters to be passed to `metric
 #' function(s) you are calling
-#' @return list object of metric values. A \code{coef} method does not
-#' exist for this function, because there's no nice way to simplify
-#' all the distance matrices. Sorry!
+#' @return list object of metric values.
 #' @author M.R. Helmus, Will Pearse
-#' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dispersion}}
+#' @seealso \code{\link{pez.shape}} \code{\link{pez.evenness}} \code{\link{pez.dispersion}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
@@ -76,16 +76,17 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' \dontrun{dissimilarity(data)}
-#' dissimilarity(data, "unifrac")
+#' \dontrun{
+#' dissim <- pez.dissimilarity(data)
+#' }
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
+#' @importFrom stats cophenetic hclust as.dist
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance=TRUE, permute=100, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=FALSE, permute=1000, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  metric <- match.arg(metric)
   if(permute < 0) stop("Can't have negative null permutations!")
 
   if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
@@ -104,35 +105,22 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "c
   } else ext.dist <- FALSE
   
   #Setup
-  output <- list(unifrac=NULL, pcd=NULL, phylosor=NULL, comdist=NULL)
+  if(sqrt.phy)
+      data <- .sqrt.phy(data)
   if(traitgram==FALSE & ext.dist==FALSE)
       dist <- cophenetic(data$phy)
-  if(sqrt.phy){
-        if(!is.ultrametric(data$phy))
-            warning("Phylogeny is not ultrametric; see function details")
-      dist <- sqrt(dist)
-      data$phy <- as.phylo(hclust(as.dist(dist)))
-  }
-  if(abundance == FALSE)
+  if(abundance.weighted == FALSE)
       data$comm[data$comm > 1] <- 1
-  #Caculate measures
-  if((metric == "unifrac" | metric == "all") & (ext.dist==FALSE & traitgram==FALSE))
-    output$unifrac <- unifrac(data$comm, data$phy, ...)
-  
-  if((metric == "pcd" | metric == "all") & (ext.dist==FALSE & traitgram==FALSE))
-    output$pcd <- pcd(data$comm, data$phy, reps=permute, ...)
 
-  #NOTE: I'm flipping phylosor to be a distance matrix
-  if((metric == "phylosor" | metric == "all")  & (ext.dist==FALSE & traitgram==FALSE)){
-    output$phylosor <- phylosor(data$comm, data$phy, ...)
-    output$phylosor <- as.dist(1 - as.matrix(output$phylosor))
-  }
-
-  if(metric == "comdist" | metric == "all")
-    output$comdist <- comdist(data$comm, dist, abundance.weighted=abundance, ...)
+  #Filter metrics according to suitability and calculate
+  functions <- setNames(c(.unifrac, .pcd, .phylosor, .comdist), c("unifrac", "pcd", "phylosor", "comdist"))
+  if(ext.dist == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  if(traitgram == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  if(abundance.weighted == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  output <- lapply(functions, function(x) x(data, dist=dist, abundance.weighted=abundance.weighted))
   
-  #Prepare output
-  output$type <- "dissimilarity"
-  class(output) <- "phy.structure"
   return(output)
 }

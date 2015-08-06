@@ -1,22 +1,17 @@
 ## ----include=FALSE--------------------
-require(plotrix)
 require(pez)
-require(ape)
-require(picante)
-require(methods)
 options(width=40)
 
-## ----tidy=TRUE------------------------
+## ----tidy=TRUE, size="small"----------
 library(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 
-## ----tidy=TRUE------------------------
+## ----tidy=TRUE, size="small"----------
 site.subset <- data[1:5,]
 spp.subset <- data[,1:3]
-data[-1,,warn=TRUE]
 
-## ----tidy=TRUE------------------------
+## ----tidy=TRUE, size="small"----------
 species(data)[1:2]
 species(data)[1:2] <- c("new", "names")
 sites(data)[1:2] <- c("newer", "names")
@@ -24,29 +19,33 @@ data <- data[, colSums(data$comm) > 5]
 traits(data)$new.trait <- rep("nonsense", nrow(traits(data)))
 traits(data)$new.trait <- NULL
 
-## ----tidy=TRUE------------------------
-shape.output <- shape(data)
-dim(coef(shape.output))
-coef(shape.output)[1:3,1:3]
+## ----tidy=TRUE, size="small"----------
+shape.output <- pez.shape(data)
+dim(shape.output)
+shape.output[1:3,1:3]
 
-## ----tidy=TRUE------------------------
-sqrt <- shape(data, sqrt.phy=TRUE)
-traits <- shape(data, traitgram=1) #traits alone
-traits <- shape(data, traitgram=c(0,0.5))#phylogeny and both
-traits <- shape(data, ext.dist=as.dist(cophenetic(data$phy)))
+## ----tidy=TRUE, size="small"----------
+sqrt <- pez.shape(data, sqrt.phy=TRUE)
+traits <- pez.shape(data, traitgram=1) #traits alone
+traits <- pez.shape(data, traitgram=c(0,0.5))#phylogeny and both
+traits <- pez.shape(data, ext.dist=as.dist(cophenetic(phy(data))))
 
-## ----tidy=TRUE, fig.width=6, fig.height=4----
-dist <- dissimilarity(data, "phylosor")
+## ----tidy=TRUE, fig.width=6, fig.height=4, size="small"----
+dist <- pez.dissimilarity(data, "phylosor")
 plot(hclust(dist$phylosor))
 
-## ----tidy=TRUE------------------------
+## ----tidy=TRUE, size="small"----------
+metrics <- generic.metrics(data, c(.mpd,.pse,.ses.mpd))
+#null.comparisons <- generic.null(data, c(.mpd,.pse))
+metrics <- generic.metrics(data, c(.mpd,.mntd), dist=as.dist(cophenetic(phy(data))))
+
+## ----tidy=TRUE, size="small"----------
 phy <- eco.phy.regression(data, permute=10)
 trait <- eco.trait.regression(data, permute=10, method="quantile", tau=c(0.25,0.5,0.7))
 trait <- eco.trait.regression(data, altogether=FALSE)
 
-## ----warning=FALSE, tidy=TRUE---------
+## ----warning=FALSE, tidy=TRUE, size="small"----
 model <- fingerprint.regression(data, eco.permute=10)
-
 
 ## ----traitgram, warning=FALSE, fig.width=4, fig.height=4.5, dev.args=list(pointsize=8)----
 assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
@@ -55,14 +54,14 @@ assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
 dataAssemblage <- data[, species(data) %in% assemblage]
 traitgram.cc(dataAssemblage, "length")
 
-## ----FPDist---------------------------
+## ----FPDist, size="small"-------------
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
 
-## ----sesFPD---------------------------
-ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
+## ----sesFPD, size="small"-------------
+ses.mfpd.data <- .ses.mpd(data, dist=fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
 
-## ----<pglmmSim, tidy=TRUE-------------
+## ----pglmmSim, tidy=TRUE, size="small"----
 # Basic parameters
 nspp <- 15; nsite <- 10
 # Fixed effects
@@ -95,7 +94,7 @@ Y <- matrix(Y, nrow = nspp, ncol = nsite)
 #Neat up the data to show structure
 rownames(Y) <- 1:nspp; colnames(Y) <- 1:nsite
 
-## ----pglmmModel, tidy=TRUE------------
+## ----pglmmModel, tidy=TRUE, size="small"----
 # Transform data into 'long' format
 # - Occurrence data
 YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)

@@ -45,7 +45,7 @@
 #' data-hungry method. Warnings will be generated if any of the
 #' methods cannot be fitted properly (the examples below give toy
 #' examples of this). In such cases the summary and plot methods of
-#' these functions may generate errors; perhaps using
+#' these functions may generate errors; perhaps use
 #' \code{\link{traceback}} to examine where these are coming from, and
 #' consider whether you want to be working with the data generating
 #' these errors. I am loathe to hide these errors or gloss over them,
@@ -69,6 +69,7 @@
 #' @rdname eco.xxx.regression
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
+#' @importFrom stats lm as.dist
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),

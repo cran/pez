@@ -10,10 +10,10 @@
 #' Figure 6. For each trait, the phylogenetic inertia of species%
 #' traits is regressed against their co-occurrence in the community
 #' matrix. Note that Pagel's \eqn{$\lambda$}{lambda},
-#' \eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa} are used, unlike
-#' the original where a mantel test was employed. Moreover, note also
-#' that Pianka's distance (as described in the manuscript) is used to
-#' measure species overlap.
+#' \eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa}, and Blomberg's K,
+#' can be used, unlike the original where a mantel test was
+#' employed. Moreover, note also that Pianka's distance (as described
+#' in the manuscript) is used to measure species overlap.
 #' 
 #' @param data \code{\link{comparative.comm}} for analysis
 #' @param eco.rnd null distribution with which to compare your
@@ -57,6 +57,7 @@
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' fingerprint.regression(data, eco.permute=10)
 #' plot(fingerprint.regression(data, permute=10, method="lm"))
+#' @importFrom stats median
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa", "blom.k"), eco.swap=1000, abundance=TRUE, ...){
@@ -116,6 +117,7 @@ summary.fingerprint.regression <- function(object, ...){
 #' @param xlab label for x-axis (default "Ecological Trait Coexistence")
 #' @param ylab label for y-axis (default "Phylogenetic inertia")
 #' @rdname fingerprint.regression
+#' @importFrom graphics plot
 #' @export
 plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Community Trait Similarity", ylab="Phylogenetic inertia", ...){
   eco <- match.arg(eco)
