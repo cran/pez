@@ -79,9 +79,10 @@
 #' during optimization.
 #' @param ... additional arguments to summary and plotting functions
 #' (currently ignored)
-#' @details For linear mixed models (\code{family = 'gaussian'}), the
-#' function estimates parameters for the model of the form, for
-#' example,
+#' @details The vignette 'pez-pglmm-overview' gives a gentle
+#' introduction to using PGLMMS. For linear mixed models (\code{family
+#' = 'gaussian'}), the function estimates parameters for the model of
+#' the form, for example,
 #' 
 #' \deqn{Y = \beta_0 + \beta_1x + b_0 + b_1x}{y = beta_0 + beta_1x + b_0 + b_1x}
 #' \deqn{b_0 ~ Gaussian(0, \sigma_0^2I_{sp})}{b_0 ~ Gaussian(0, sigma_0^2I_(sp))}
@@ -150,8 +151,8 @@
 #' \item{B.zscore}{approximate Z scores for the fixed effects regression coefficients}
 #' \item{B.pvalue}{approximate tests for the fixed effects regression coefficients being different from zero}
 #' \item{ss}{random effects' standard deviations for the covariance matrix \eqn{\sigma^2V}{sigma^2 V} for each random effect in order. For the linear mixed model, the residual variance is listed last}
-#' \item{s2r}{random effects variances for nested random effects}
-#' \item{s2n}{random effects variances for non-nested random effects}
+#' \item{s2r}{random effects variances for non-nested random effects}
+#' \item{s2n}{random effects variances for nested random effects}
 #' \item{s2resid}{for linear mixed models, the residual vairance}
 #' \item{logLIK}{for linear mixed models, the log-likelihood for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
 #' \item{AIC}{for linear mixed models, the AIC for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
@@ -251,6 +252,9 @@
 #' 
 #' #########################################################
 #' #Second section; detailed simulation and analysis #######
+#' #NOTE: this section is explained and annotated in #######
+#' #      detail in the vignette 'pez-pglmm-overview'#######
+#' #      run 'vignette('pez-pglmm-overview') to read#######
 #' #########################################################
 #' # Generate simulated data for nspp species and nsite sites
 #' nspp <- 15
@@ -304,6 +308,11 @@
 #' 
 #' # Simulate species abundances among sites to give matrix Y that
 #' # contains species in rows and sites in columns
+#' y <- rep(b0, each=nsite)
+#' y <- y + rep(b1, each=nsite) * rep(X, nspp)
+#' y <- y + rnorm(nspp*nsite) #add some random 'error'
+#' Y <- rbinom(length(y), size=1, prob=exp(y)/(1+exp(y)))
+
 #' y <- matrix(outer(b0, array(1, dim = c(1, nsite))), nrow = nspp,
 #' ncol = nsite) + matrix(outer(b1, X), nrow = nspp, ncol = nsite)
 #' e <- rnorm(nspp * nsite, sd = sd.resid)
@@ -418,6 +427,12 @@
 communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NULL, site = NULL, 
 	random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500, 
 	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
+
+    #Error checking
+    if(!is.factor(sp))
+        stop("'sp' must be a factor")
+    if(!is.factor(site))
+        stop("'site' must be a factor")
 
 	if (family == "gaussian") 
 		z <- communityPGLMM.gaussian(formula = formula, data = data, sp = sp, site = site, random.effects = random.effects, 
@@ -752,7 +767,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
         #NOTE: the nested/non-nested returns are 'swapped' here, which looks dodgy but is better than them being the wrong way round!
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2n = s2r, s2r = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
+		s2n = s2n, s2r = s2r, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = NULL, nested = nested, 
 		sp = sp, site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 
@@ -1154,7 +1169,7 @@ if (is.null(sp) | is.null(site))
 
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2n = s2r, s2r = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
+		s2n = s2n, s2r = s2r, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested = nested, sp = sp, 
 		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"
