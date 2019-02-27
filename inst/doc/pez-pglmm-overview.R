@@ -27,8 +27,8 @@ prob <- prob + rnorm(nspp*nsite)
 pres <- rbinom(length(prob), size=1, prob=exp(prob)/(1+exp(prob)))
 
 ## ----tidy=TRUE------------------------
-site <- factor(rep(1:nsite, each=nspp))
-species <- factor(rep(1:nspp, nsite))
+site <- factor(rep(1:nsite, nspp))
+species <- factor(rep(1:nspp, each=nsite))
 env <- rep(env, nspp)
 
 ## ----tidy=TRUE------------------------

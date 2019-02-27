@@ -19,6 +19,13 @@
 #' for this from somewhere, but I can't find the reference: if you
 #' published on this before 2012, please get in touch with me.
 #'
+#' \code{.scheiner} has a different formula for the case where
+#' \code{q} is equal to 1 (check the code if interested). The nature
+#' of its definition means that values very close to, but not exactly
+#' equal to, 1 may be extremely large or extremely small. This is a
+#' feature, not a bug, and an inherent aspect of its definition. Check
+#' the formula in the code for more information!
+#'
 #' @note Many (but not all) of these functions are fairly trivial
 #' wrappers around functions in other packages. In the citations for
 #' each metric, * indicates a function that's essentially written in
@@ -175,10 +182,53 @@
     mpd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted)
 }
 
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.vpd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    warning("This won't work for abundance weighted (yet) - Will, look up the weighting package")
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    if(!abundance.weighted)
+        x$comm[x$comm>0] <- 1
+    
+    output <- numeric(nrow(x$comm))
+    for(i in seq_len(nrow(x$comm))){
+        comm.dist <- dist[x$comm[i,] > 0, x$comm[i,] > 0]
+        output[i] <- var(comm.dist[lower.tri(comm.dist)])
+    }
+    names(output) <- rownames(x$comm)
+    return(output)
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.vntd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    warning("This won't work for abundance weighted (yet) - Will, look up the weighting package")
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    if(!abundance.weighted)
+        x$comm[x$comm>0] <- 1
+
+    output <- numeric(nrow(x$comm))
+    for(i in seq_len(nrow(x$comm))){
+        comm.dist <- dist[x$comm[i,] > 0, x$comm[i,] > 0]
+        diag(comm.dist) <- NA
+        output[i] <- var(apply(comm.dist, 1, min, na.rm=TRUE))
+    }
+    names(output) <- rownames(x$comm)
+    return(output)
+}
+
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation
 #' and phylogenetic diversity. Biological Conservation, 61, 1-10.
 #' @importFrom picante pd
-#' @importFrom stats lm
+#' @importFrom stats lm resid
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -336,100 +386,100 @@
 #' @export
 .phylo.entropy <- function(x, ...)
 {
-  #Assertions and argument handling
-  if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
-  
-  #Setup
-  tree.phylog <- newick2phylog(write.tree(x$phy))
-  species <- colnames(x$comm)
-  hp.sites <- numeric(nrow(x$comm))
-  
-  ## beginning of the sites iteration
-  for (i in seq(nrow(x$comm)))
-  {
-    ## species which occured at the site
-    site.species <- species[which(x$comm[i,] > 0)]
+    #Assertions and argument handling
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
     
-    ## species which NOT occured at the site. They will be removed
-    ## from the phylogenetic tree.
-    other.species <- species[which(x$comm[i,] == 0)]
+    #Setup
+    tree.phylog <- newick2phylog(write.tree(x$phy))
+    species <- colnames(x$comm)
+    hp.sites <- numeric(nrow(x$comm))
     
-    ## proportions of occurrence of each species
-    proportions <- x$comm[i,site.species] / sum(x$comm[i,])
-    
-    ## god, how I hate these tree conversions...
-    ## also, this comparison is very ugly, it has to be a better
-    ## way...
-    ## TODO: Search for a better way to verify if an object is empty
-    if (length(other.species) == 0) {
-      partial.tree <- tree.phylog
-    } else {
-      if(length(site.species) == 1) {other.species<-c(other.species,site.species)}
-      partial.tree <- drop.tip(x$phy, other.species)
-      if (all(partial.tree$edge.length[1] == partial.tree$edge.length) | length(site.species) == 2)
-      {
-        hp.sites[i] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length[1]))
-        next
-      }
-      partial.tree <- newick2phylog(write.tree(drop.tip(x$phy, other.species)))
-    }
-    ## TODO: Some (I think) partial trees are not rooted. The results
-    ## seem to be ok, but the paper states that Hp should be
-    ## calculated from a rooted tree. Do not know why though. Check
-    ## what can be done to keep partial trees rooted.
-    if ("Root" %in% names(partial.tree$nodes))
+    ## beginning of the sites iteration
+    for (i in seq(nrow(x$comm)))
     {
-      partial.branches <-
-        partial.tree$nodes[-c(length(partial.tree$nodes))]
-    } else {
-      partial.branches <- partial.tree$nodes
-    }
-    ## terminal branches sizes
-    partial.leaves <- partial.tree$leaves
-    
-    ## first part of the calculations. Here we calculate the index for
-    ## each terminal branch
-    sum.leaves <- sum(partial.leaves *
-                        proportions[names(partial.leaves)] *
-                        log(proportions[names(partial.leaves)]))
-    
-    ## storing the first part of the calculation
-    hp <- c(sum.leaves)
-    
-    ## initilizing the list that will hold the descending leaves for
-    ## each branch
-    descending.leaves <- list()
-    
-    ## determining the descending leaves for each branch
-    for (j in names(partial.branches)) {
-      if (all(partial.tree$parts[[j]] %in% names(partial.leaves))) {
-        descending.leaves[[j]] <- partial.tree$parts[[j]]
-      } else {
-        branches <- partial.tree$parts[[j]][!partial.tree$parts[[j]]
-                                            %in% names(partial.leaves)]
-        leaves <- partial.tree$parts[[j]][partial.tree$parts[[j]] %in%
-                                            names(partial.leaves)]
-        for (k in branches) {
-          leaves <- c(leaves, descending.leaves[[k]])
+        ## species which occured at the site
+        site.species <- species[which(x$comm[i,] > 0)]
+        
+        ## species which NOT occured at the site. They will be removed
+        ## from the phylogenetic tree.
+        other.species <- species[which(x$comm[i,] == 0)]
+        
+        ## proportions of occurrence of each species
+        proportions <- x$comm[i,site.species] / sum(x$comm[i,])
+        
+        ## god, how I hate these tree conversions...
+        ## also, this comparison is very ugly, it has to be a better
+        ## way...
+        ## TODO: Search for a better way to verify if an object is empty
+        if (length(other.species) == 0) {
+            partial.tree <- tree.phylog
+        } else {
+            if(length(site.species) == 1) {other.species<-c(other.species,site.species)}
+            partial.tree <- drop.tip(x$phy, other.species)
+            if (all(partial.tree$edge.length[1] == partial.tree$edge.length) | length(site.species) == 2)
+            {
+                hp.sites[i] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length[1]))
+                next
+            }
+            partial.tree <- newick2phylog(write.tree(drop.tip(x$phy, other.species)))
         }
-        descending.leaves[[j]] <- leaves
-      }
+        ## TODO: Some (I think) partial trees are not rooted. The results
+        ## seem to be ok, but the paper states that Hp should be
+        ## calculated from a rooted tree. Do not know why though. Check
+        ## what can be done to keep partial trees rooted.
+        if ("Root" %in% names(partial.tree$nodes))
+        {
+            partial.branches <-
+                partial.tree$nodes[-c(length(partial.tree$nodes))]
+        } else {
+            partial.branches <- partial.tree$nodes
+        }
+        ## terminal branches sizes
+        partial.leaves <- partial.tree$leaves
+        
+        ## first part of the calculations. Here we calculate the index for
+        ## each terminal branch
+        sum.leaves <- sum(partial.leaves *
+                          proportions[names(partial.leaves)] *
+                          log(proportions[names(partial.leaves)]))
+        
+        ## storing the first part of the calculation
+        hp <- c(sum.leaves)
+        
+        ## initilizing the list that will hold the descending leaves for
+        ## each branch
+        descending.leaves <- list()
+        
+        ## determining the descending leaves for each branch
+        for (j in names(partial.branches)) {
+            if (all(partial.tree$parts[[j]] %in% names(partial.leaves))) {
+                descending.leaves[[j]] <- partial.tree$parts[[j]]
+            } else {
+                branches <- partial.tree$parts[[j]][!partial.tree$parts[[j]]
+                                                    %in% names(partial.leaves)]
+                leaves <- partial.tree$parts[[j]][partial.tree$parts[[j]] %in%
+                                                  names(partial.leaves)]
+                for (k in branches) {
+                    leaves <- c(leaves, descending.leaves[[k]])
+                }
+                descending.leaves[[j]] <- leaves
+            }
+        }
+        ## calculating the index for each internal branch
+        for (j in names(partial.branches)) {
+            sum.proportions.desc.leaves <-
+                sum(proportions[descending.leaves[[j]]])
+            hp <- c(hp, (partial.branches[[j]] * sum.proportions.desc.leaves
+                * log(sum.proportions.desc.leaves)))
+        }
+        ## putting it all together
+        hp.sites[i] <- abs(sum(hp))
     }
-    ## calculating the index for each internal branch
-    for (j in names(partial.branches)) {
-      sum.proportions.desc.leaves <-
-        sum(proportions[descending.leaves[[j]]])
-      hp <- c(hp, (partial.branches[[j]] * sum.proportions.desc.leaves
-                   * log(sum.proportions.desc.leaves)))
-    }
-    ## putting it all together
-    hp.sites[i] <- abs(sum(hp))
-  }
-  #Make the 0 values NAs
-  hp.sites[hp.sites==0]<-NA
-  names(hp.sites) <- rownames(x$comm)
-  ## the end.
-  return(hp.sites)
+    #Make the 0 values NAs
+    hp.sites[hp.sites==0]<-NA
+    names(hp.sites) <- rownames(x$comm)
+    ## the end.
+    return(hp.sites)
 }
 
 #' @importFrom ape extract.clade
@@ -533,7 +583,7 @@
         diag(mat) <- 0
         apply(mat, 2, function(x) which(x == 1))
     }
-        
+    
     .denom <-  function(tree) {
         # Count number of lineages originating at each internal node
         # (i.e. number of splits)
@@ -570,6 +620,7 @@
     subtrees <- assemblage.phylogenies(x)
     PD <- pd(x$comm, x$phy)
     tmp <- setNames(rep(0, ncol(x$comm)), colnames(x$comm))
+    
     TL <- lapply(subtrees, function(tree) {
         #Get terminal edge length
         res <- x$phy$edge.length[x$phy$edge[,2] <= length(x$phy$tip.label)]
@@ -578,8 +629,7 @@
     })
     TL <- do.call("cbind", TL)
     numer <- PD$PD + colSums(TL * (t(x$comm) - 1))
-    denom <- PD$PD + (rowSums(x$comm, na.rm = na.rm) / rowSums(x$comm,
-        na.rm=na.rm) - 1) * colSums(TL)
+    denom <- PD$PD + (apply(x$comm, 1, mean) - 1) * colSums(TL)
     res <- numer/denom
     names(res) <- rownames(x$comm)
     return(res)
@@ -591,25 +641,27 @@
 #' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
 #' biodiversity that integrates abundance, phylogeny, and function.
 #' Oikos, 121, 1191-1202.
+#' @importFrom picante evol.distinct
 #' @export
-.scheiner <- function(x, q=0.0001, abundance.weighted = FALSE, ...){
+.scheiner <- function(x, q=0, abundance.weighted=FALSE, ...){
     #Assertions and argument handling
     if(!inherits(x, "comparative.comm")) stop("'x' must be a comparative community ecology object")
     
-    #Setup
-    ed <- evol.distinct(x$phy, "fair.proportion")$w
+    #Internal wrapper for per-site calculation
+    ..scheiner <- function(site, q){
+        ed <- evol.distinct(x[,site>0]$phy, "fair.proportion")$w
+        site <- site[site > 0]
+        if(q==0)
+            return(length(site))
+        if(q==1)
+            return(exp(-sum((site*ed)/sum(site*ed)*log(site*ed/sum(site*ed)))))
+        return(sum(((site*ed)/sum(site*ed))^q)^(1/(1-q)))
+    }
+    
+    #Do the work and return
     if(!abundance.weighted)
         x$comm[x$comm > 0] <- 1
-    
-    #Calculate scheiner; beware dividing by zero inadvertantly
-    output <- numeric(nrow(x$comm))
-    for(i in seq(nrow(x$comm))){
-        if(q==1)
-            output[i] <- exp(-1*sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i])) * log((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))))
-        else
-            output[i] <- sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))^q)^(1/(1-q))
-    }
-    return(output)
+    return(apply(x$comm, 1, ..scheiner, q))
 }
 
 #' @importFrom picante pse
@@ -784,72 +836,76 @@
 #' @name pez.metrics
 #' @export
 .d <- function(x, permute=1000, ...) {
-  #Checking
-  if(! inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
-  if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))
-  x$comm[x$comm > 1] <- 1
-  # check tree branch lengths
-  el    <- x$phy$edge.length
-  elTip <- x$phy$edge[,2] <= length(x$phy$tip.label)
-  
-  if(any(el[elTip] == 0)) 
-    stop('Phylogeny contains pairs of tips on zero branch lengths, cannot currently simulate')
-  if(any(el[! elTip] == 0)) 
-    stop('Phylogeny contains zero length internal branches. Use di2multi.')
+    #Checking
+    if(! inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
+    if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))
+    # Set everything to be binary
+    x$comm[x$comm > 1] <- 1
+    # Add node labels (problem with caper code)
+    if(is.null(x$phy$node.label))
+        x$phy$node.label <- apply(expand.grid(letters,letters,letters), 1, paste, collapse="")[seq_len(tree$Nnode)]
+    # check tree branch lengths
+    el    <- x$phy$edge.length
+    elTip <- x$phy$edge[,2] <= length(x$phy$tip.label)
+    
+    if(any(el[elTip] == 0)) 
+        stop('Phylogeny contains pairs of tips on zero branch lengths, cannot currently simulate')
+    if(any(el[! elTip] == 0)) 
+        stop('Phylogeny contains zero length internal branches. Use di2multi.')
 
 
-  #Internal D calculation
-  ..d <- function(ds, vcv, permute, phy){
-      dsSort <- sort(ds)
-      
-      ## Random Association model
-      ds.ran <- replicate(permute, sample(ds))
-      
-      ## Brownian Threshold model random data
-      ds.phy <- rmvnorm(permute, sigma=unclass(vcv)) # class of 'VCV.array' throws the method dispatch
-      ds.phy <- as.data.frame(t(ds.phy))
-      
-                                        # turn those into rank values, then pull that rank's observed value
-      ds.phy <- apply(ds.phy, 2, rank, ties="random")
-      ds.phy <- apply(ds.phy, 2, function(x) as.numeric(dsSort[x]))
-      
-      ## Get change along edges
-      ## insert observed and set dimnames for contrCalc
-      ds.ran <- cbind(Obs=ds, ds.ran)
-      ds.phy <- cbind(Obs=ds, ds.phy)
-      dimnames(ds.ran) <- dimnames(ds.phy) <- list(x$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
-      
-      ## now run that through the contrast engine 
-      ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-      ds.phy.cc <- contrCalc(vals=ds.phy, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-      
-      ## get sums of change and distributions
-      ransocc <- colSums(ds.ran.cc$contrMat)
-      physocc <- colSums(ds.phy.cc$contrMat)
-      # double check the observed, but only to six decimal places or you can get floating point errors
-      if(round(ransocc[1], digits=6) != round(physocc[1], digits=6)) stop('Problem with character change calculation in phylo.d')
-      obssocc <- ransocc[1]
-      ransocc <- ransocc[-1]
-      physocc <- physocc[-1]
-      
-      soccratio <- (obssocc - mean(physocc)) / (mean(ransocc) - mean(physocc))
-      soccpval1 <- sum(ransocc < obssocc) / permute
-      soccpval0 <- sum(physocc > obssocc) / permute
-      
-      return(c(soccratio, soccpval1, soccpval0))
-  }
+    #Internal D calculation
+    ..d <- function(ds, vcv, permute, phy){
+        dsSort <- sort(ds)
+        
+        ## Random Association model
+        ds.ran <- replicate(permute, sample(ds))
+        
+        ## Brownian Threshold model random data
+        ds.phy <- rmvnorm(permute, sigma=unclass(vcv)) # class of 'VCV.array' throws the method dispatch
+        ds.phy <- as.data.frame(t(ds.phy))
+        
+        # turn those into rank values, then pull that rank's observed value
+        ds.phy <- apply(ds.phy, 2, rank, ties="random")
+        ds.phy <- apply(ds.phy, 2, function(x) as.numeric(dsSort[x]))
+        
+        ## Get change along edges
+        ## insert observed and set dimnames for contrCalc
+        ds.ran <- cbind(Obs=ds, ds.ran)
+        ds.phy <- cbind(Obs=ds, ds.phy)
+        dimnames(ds.ran) <- dimnames(ds.phy) <- list(x$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
+        
+        ## now run that through the contrast engine 
+        ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
+        ds.phy.cc <- contrCalc(vals=ds.phy, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
+        
+        ## get sums of change and distributions
+        ransocc <- colSums(ds.ran.cc$contrMat)
+        physocc <- colSums(ds.phy.cc$contrMat)
+        # double check the observed, but only to six decimal places or you can get floating point errors
+        if(round(ransocc[1], digits=6) != round(physocc[1], digits=6)) stop('Problem with character change calculation in phylo.d')
+        obssocc <- ransocc[1]
+        ransocc <- ransocc[-1]
+        physocc <- physocc[-1]
+        
+        soccratio <- (obssocc - mean(physocc)) / (mean(ransocc) - mean(physocc))
+        soccpval1 <- sum(ransocc < obssocc) / permute
+        soccpval0 <- sum(physocc > obssocc) / permute
+        
+        return(c(soccratio, soccpval1, soccpval0))
+    }
 
-  ## being careful with the edge order - pre-reorder the phylogeny
-  phy <- reorder(x$phy, 'pruningwise')
-  
-  vcv <- VCV.array(x$phy)
-  vals <- matrix(ncol=3, nrow=nrow(x$comm))
-  rownames(vals) <- rownames(x$comm)
-  colnames(vals) <- c("D", "P(D=1)", "P(D=0)")
-  for(i in seq(nrow(x$comm)))
-      vals[i,] <- ..d(x$comm[i,], vcv, permute, x$phy)
-  
-  return(vals)
+    ## being careful with the edge order - pre-reorder the phylogeny
+    phy <- reorder(x$phy, 'pruningwise')
+    
+    vcv <- VCV.array(x$phy)
+    vals <- matrix(ncol=3, nrow=nrow(x$comm))
+    rownames(vals) <- rownames(x$comm)
+    colnames(vals) <- c("D", "P(D=1)", "P(D=0)")
+    for(i in seq(nrow(x$comm)))
+        vals[i,] <- ..d(x$comm[i,], vcv, permute, x$phy)
+    
+    return(vals)
 }
 
 #' @references \code{sesmpd,sesmntd} Webb C.O. (2000). Exploring the
@@ -879,6 +935,30 @@
     if(is.null(dist))
         dist <- cophenetic(x$phy)
     return(ses.mntd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @importFrom picante ses.mntd
+#' @export
+.ses.vpd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(generic.null(x, list(.vpd), null.model=null.model, permute=permute, abundance.weighted=abundance.weighted, ...))
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @importFrom picante ses.mntd
+#' @export
+.ses.vntd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(generic.null(x, list(.vntd), null.model=null.model, permute=permute, abundance.weighted=abundance.weighted, ...))
 }
 
 #' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
@@ -930,4 +1010,81 @@
     if(is.null(dist))
         dist <- cophenetic(x$phy)
     return(mntd(x$comm, dis=1/as.matrix(dist), abundance.weighted=abundance.weighted))
+}
+
+#' @importFrom picante mntd
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.innd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(mntd(x$comm, dis=1/as.matrix(dist), abundance.weighted=abundance.weighted))
+}
+
+#' @importFrom caper clade.matrix
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @references \code{PE} Rosauer, D. A. N., Laffan, S. W., Crisp,
+#'     M. D., Donnellan, S. C., & Cook, L. G. (2009). Phylogenetic
+#'     endemism: a new approach for identifying geographical
+#'     concentrations of evolutionary history. Molecular Ecology,
+#'     18(19), 4061-4072.
+#' @export
+.pe <- function(x, ...) {
+    #Setup and argument handling
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    x$comm[x$comm > 0] <- 1
+    x$comm[,colSums(x$comm) == 0] <- NA
+
+    #Build branch by site matrix
+    c.m <- clade.matrix(x$phy)
+    branch.comm <- matrix(0, nrow=nrow(x$comm), ncol=nrow(c.m$clade.matrix))
+    for(i in seq_len(nrow(x$comm))){
+        edges.present <- apply(c.m$clade.matrix[,which(x$comm[i,] > 0),drop=FALSE], 1, function(y) any(y > 0))
+        branch.comm[i, edges.present] <- 1
+    }
+    
+    #Scale branches (columns) to sum to their length (sum to 1; then sum to their length)
+    branch.comm <- apply(branch.comm, 2, function(y) return(y/sum(y)))
+    branch.comm <- t(apply(branch.comm, 1, function(y) y*c.m$edge.length))
+    
+    #Calculate and return
+    return(setNames(apply(branch.comm, 1, sum, na.rm=TRUE), sites(x)))
+}
+
+#' @importFrom caper clade.matrix
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @references \code{BED} Cadotte, M. W., & Jonathan Davies,
+#'     T. (2010). Rarest of the rare: advances in combining
+#'     evolutionary distinctiveness and scarcity to inform
+#'     conservation at biogeographical scales. Diversity and
+#'     Distributions, 16(3), 376-385.
+#' @export
+.bed <- function(x, ...) {
+    #Setup and argument handling
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    x$comm[x$comm > 0] <- 1
+    x$comm[,colSums(x$comm) == 0] <- NA
+
+    #Build branch by site matrix (drop root)
+    c.m <- clade.matrix(x$phy)
+    branch.comm <- matrix(0, nrow=nrow(x$comm), ncol=nrow(c.m$clade.matrix))
+    for(i in seq_len(nrow(x$comm))){
+        spp <- which(x$comm[i,] > 0)
+        for(j in seq_along(spp))
+            branch.comm[i,c.m$clade.matrix[,spp[j]]==1] <- branch.comm[i,c.m$clade.matrix[,spp[j]]==1] + x$comm[i,spp[j]]
+    }
+    
+    #Scale branches (columns) to sum to their length (sum to 1; then sum to their length)
+    branch.comm <- apply(branch.comm, 2, function(y) return(y/sum(y)))
+    branch.comm <- t(apply(branch.comm, 1, function(y) y*c.m$edge.length))
+    
+    #Calculate and return
+    return(setNames(apply(branch.comm, 1, sum, na.rm=TRUE), sites(x)))
 }

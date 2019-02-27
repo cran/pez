@@ -53,7 +53,7 @@
 #' because it generates warning messsages (which WDP is loathe to
 #' suppress) which are related to the general tendency for a low rank
 #' of phylogenetic distance matrices. Much ink has been written about
-#' this, and in par this problem is why the \code{eigen.sum} measure
+#' this, and in part this problem is why the \code{eigen.sum} measure
 #' came to be suggested.
 #'
 #' Many of these metrics, (\emph{e.g.}, \code{eed}) will cause
@@ -108,17 +108,11 @@
 #' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
 #' biodiversity that integrates abundance, phylogeny, and function.
 #' Oikos, 121, 1191-1202.
+#' @importFrom ape is.binary.tree
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' (output<-pez.shape(data))
-#' @importFrom picante psd mpd pd mntd
-#' @importFrom vegan taxondive
-#' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
-#' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo is.binary.tree
-#' @importFrom FD dbFD
-#' @importFrom stats coef hclust as.dist resid lm coef
-#' @importFrom utils capture.output
 #' @export
 pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, quick=TRUE, q=0.0001)
 {
@@ -159,7 +153,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       dist <- cophenetic(data$phy)
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
+  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .vpd, .vntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "vpd", "vngtd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)

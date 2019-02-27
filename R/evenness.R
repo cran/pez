@@ -47,7 +47,7 @@
 #' \code{fd.dist} and the Pagel transformations
 #' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 #' \eqn{$\kappa$}{kappa}).
-#' @param q value for \emph{q} in \code{scheiner} (default 0.0001)
+#' @param q value for \emph{q} in \code{scheiner} (default 1)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -125,7 +125,7 @@
 #' @importFrom stats coef cophenetic hclust as.dist
 #' @importFrom utils capture.output
 #' @export
-pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=0.0001)
+pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=1)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -167,7 +167,7 @@ pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ex
   #data <- data[,colSums(data$comm)>0]
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .mipd, .innd, .taxon, .pse, .dist.fd, .scheiner), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "mipd", "innd", "taxon", "pse", "dist.fd", "scheiner"))
+  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .vpd, .mntd, .mipd, .innd, .taxon, .pse, .dist.fd, .scheiner), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "vpd", "vntd", "mipd", "innd", "taxon", "pse", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[!names(functions) %in% c("dist.fd","lambda","delta","kappa")]
   if(sqrt.phy == TRUE)
