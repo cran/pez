@@ -1,6 +1,6 @@
-abb3778535faa6f62cb36886d9e0ff77 *DESCRIPTION
-3bcddfaf3b874999f10492cbfb5541d5 *NAMESPACE
-d287ccb64fdc531c38319befebe7bf3b *NEWS
+5a8005cf022ca6ce92841c0abdeedc4b *DESCRIPTION
+4184f4d11b3807703141f21217175b9b *NAMESPACE
+f13f9d3fe376d4cf0459da8e8ae8ef37 *NEWS
 c24d46e768bb0c261f6f1fb73365680f *R/comparative.comm.R
 d85614ae96912b917ea8822ddbc445fb *R/dispersion.R
 a1294fa676387ea6976e5cecba86b255 *R/dissimilarity.R
@@ -24,7 +24,7 @@ f62412535b3ea31238340ec659223582 *R/metrics.R
 5adbcb3ed1cd9ba3cea8411ddfae6a59 *R/phy.sim.R
 384d4c80eed37c7ec992668d0b582fec *R/plotting.R
 20ba85ab1f43169f0d5208e2491b012e *R/scape.R
-0c5174f8c384cfb9cb32f01f608fe526 *R/shape.R
+3cda898db7c9e894f3cb5ecd1866c1c6 *R/shape.R
 30cdc5db2e87b9c020e26691c2c38332 *R/traits.R
 b64e5ace1d81d8ea2dfc0f225404b1bf *R/utility.R
 2129f9a3e7fa87a2c1bfcc99038c8ba2 *build/vignette.rds
@@ -64,7 +64,7 @@ a38a0bdb20906b1a4e7392e79a80312a *man/eco.xxx.regression.Rd
 d7c2b2ec018411fc3203b1159ce8e8aa *man/fibre.plot.Rd
 102a05638ea63251280b24e666513a5b *man/fingerprint.regression.Rd
 3976eb80dc06293ed49551d68ae3746b *man/generic.metrics.Rd
-0af2afe2e108e40bdcd4ee4f1fb5b5a6 *man/laja.Rd
+a75aefb1f2138a95300b7d9246fc8c56 *man/laja.Rd
 6a02301541311e3535c02de204446ac6 *man/pez-internal.Rd
 c49dd7ccb56ca595e978c522e536d680 *man/pez.Rd
 6cd32026da3d703007f8763baa504530 *man/pez.dispersion.Rd

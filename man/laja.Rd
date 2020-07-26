@@ -12,7 +12,7 @@
 dataframe of sites-by-taxa, a dataframe of sites-by-environment,
 and a dataframe of traits}
 \usage{
-laja
+data(laja)
 }
 \description{
 This data set includes macroinvertebrate samples from
@@ -34,3 +34,4 @@ phylogenetic structure of prey communities. Oecologia, 173,
 M.R. Helmus
 }
 \keyword{datasets}
+

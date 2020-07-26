@@ -1,3 +1,8 @@
+2020-07-26	Version 1.2-1
+
+* DESCRIPTION - formatR added to suggests for vignettes (at CRAN's request)
+* shape.R - is.binary.tree --> is.binary (at ape's request)
+
 2019-02-26	Version 1.2-0
 
 * assemblage.phylogenies - bug in species dropping (affecting IAC and
