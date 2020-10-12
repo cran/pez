@@ -8,9 +8,11 @@
 \alias{river.env}
 \alias{river.sites}
 \title{Macroinvertebrate samples from the Rio Laja of Mexico}
-\format{\code{laja} contains a \code{\link{phylo}} object, a
+\format{
+\code{laja} contains a \code{\link{phylo}} object, a
 dataframe of sites-by-taxa, a dataframe of sites-by-environment,
-and a dataframe of traits}
+and a dataframe of traits
+}
 \usage{
 data(laja)
 }
@@ -34,4 +36,3 @@ phylogenetic structure of prey communities. Oecologia, 173,
 M.R. Helmus
 }
 \keyword{datasets}
-

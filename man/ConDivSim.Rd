@@ -4,8 +4,7 @@
 \alias{ConDivSim}
 \title{Null models for functional-phylogenetic diversity}
 \usage{
-ConDivSim(object, type = "traits", n.sim = 100, plot = TRUE,
-  disp99 = FALSE)
+ConDivSim(object, type = "traits", n.sim = 100, plot = TRUE, disp99 = FALSE)
 }
 \arguments{
 \item{object}{a \code{\link{comparative.comm}} object, with

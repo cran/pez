@@ -60,8 +60,13 @@ phy(x) <- value
 
 assemblage.phylogenies(data)
 
-\method{as.data.frame}{comparative.comm}(x, row.names = NULL,
-  optional = FALSE, abundance.weighted = FALSE, ...)
+\method{as.data.frame}{comparative.comm}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  abundance.weighted = FALSE,
+  ...
+)
 
 \method{within}{comparative.comm}(data, expr, ...)
 }

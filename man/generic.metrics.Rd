@@ -7,15 +7,27 @@
 \alias{.metric.null}
 \title{Calculate any metric(s) (and compare with null distributions)}
 \usage{
-generic.null(data, metrics, null.model = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
-  "trialswap", "trait.asm"), permute = 1000, comp.fun = .ses, ...)
+generic.null(
+  data,
+  metrics,
+  null.model = c("taxa.labels", "richness", "frequency", "sample.pool",
+    "phylogeny.pool", "independentswap", "trialswap", "trait.asm"),
+  permute = 1000,
+  comp.fun = .ses,
+  ...
+)
 
 .ses(observed, null)
 
-.metric.null(data, metrics, null.model = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
-  "trialswap", "trait.asm"), permute = 1000, trait = -1, ...)
+.metric.null(
+  data,
+  metrics,
+  null.model = c("taxa.labels", "richness", "frequency", "sample.pool",
+    "phylogeny.pool", "independentswap", "trialswap", "trait.asm"),
+  permute = 1000,
+  trait = -1,
+  ...
+)
 
 generic.metrics(data, metrics, ...)
 }

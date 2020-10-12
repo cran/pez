@@ -11,20 +11,40 @@
 \alias{plot.eco.xxx.regression}
 \title{eco.xxx.regression}
 \usage{
-eco.env.regression(data, randomisation = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
-  "trialswap"), permute = 0, method = c("quantile", "lm", "mantel"),
-  altogether = TRUE, indep.swap = 1000, abundance = TRUE, ...)
+eco.env.regression(
+  data,
+  randomisation = c("taxa.labels", "richness", "frequency", "sample.pool",
+    "phylogeny.pool", "independentswap", "trialswap"),
+  permute = 0,
+  method = c("quantile", "lm", "mantel"),
+  altogether = TRUE,
+  indep.swap = 1000,
+  abundance = TRUE,
+  ...
+)
 
-eco.phy.regression(data, randomisation = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
-  "trialswap"), permute = 0, method = c("quantile", "lm", "mantel"),
-  indep.swap = 1000, abundance = TRUE, ...)
+eco.phy.regression(
+  data,
+  randomisation = c("taxa.labels", "richness", "frequency", "sample.pool",
+    "phylogeny.pool", "independentswap", "trialswap"),
+  permute = 0,
+  method = c("quantile", "lm", "mantel"),
+  indep.swap = 1000,
+  abundance = TRUE,
+  ...
+)
 
-eco.trait.regression(data, randomisation = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
-  "trialswap"), permute = 0, method = c("quantile", "lm", "mantel"),
-  altogether = TRUE, indep.swap = 1000, abundance = TRUE, ...)
+eco.trait.regression(
+  data,
+  randomisation = c("taxa.labels", "richness", "frequency", "sample.pool",
+    "phylogeny.pool", "independentswap", "trialswap"),
+  permute = 0,
+  method = c("quantile", "lm", "mantel"),
+  altogether = TRUE,
+  indep.swap = 1000,
+  abundance = TRUE,
+  ...
+)
 
 \method{summary}{eco.xxx.regression}(object, ...)
 

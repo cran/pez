@@ -6,8 +6,14 @@
 \title{Creates a community comparative ecology object, the basis of all
 functions in pez}
 \usage{
-comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
-  force.root = -1)
+comparative.comm(
+  phy,
+  comm,
+  traits = NULL,
+  env = NULL,
+  warn = TRUE,
+  force.root = -1
+)
 
 \method{print}{comparative.comm}(x, ...)
 }

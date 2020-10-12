@@ -28,8 +28,7 @@ comm.dist(x)
 
 traits.dist(x, dist.func = dist.func.default, ...)
 
-\method{traits.dist}{comparative.comm}(x, dist.func = dist.func.default,
-  alltogether = TRUE, ...)
+\method{traits.dist}{comparative.comm}(x, dist.func = dist.func.default, alltogether = TRUE, ...)
 
 \method{traits.dist}{default}(x, dist.func = dist.func.default, ...)
 

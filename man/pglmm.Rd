@@ -12,32 +12,70 @@
 \alias{communityPGLMM.predicted.values}
 \title{Phylogenetic Generalised Linear Mixed Model for Community Data}
 \usage{
-communityPGLMM(formula, data = list(), family = "gaussian",
-  sp = NULL, site = NULL, random.effects = list(), REML = TRUE,
-  s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500,
-  tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE)
+communityPGLMM(
+  formula,
+  data = list(),
+  family = "gaussian",
+  sp = NULL,
+  site = NULL,
+  random.effects = list(),
+  REML = TRUE,
+  s2.init = NULL,
+  B.init = NULL,
+  reltol = 10^-6,
+  maxit = 500,
+  tol.pql = 10^-6,
+  maxit.pql = 200,
+  verbose = FALSE
+)
 
-communityPGLMM.gaussian(formula, data = list(), family = "gaussian",
-  sp = NULL, site = NULL, random.effects = list(), REML = TRUE,
-  s2.init = NULL, B.init = NULL, reltol = 10^-8, maxit = 500,
-  verbose = FALSE)
+communityPGLMM.gaussian(
+  formula,
+  data = list(),
+  family = "gaussian",
+  sp = NULL,
+  site = NULL,
+  random.effects = list(),
+  REML = TRUE,
+  s2.init = NULL,
+  B.init = NULL,
+  reltol = 10^-8,
+  maxit = 500,
+  verbose = FALSE
+)
 
-communityPGLMM.binary(formula, data = list(), family = "binomial",
-  sp = NULL, site = NULL, random.effects = list(), REML = TRUE,
-  s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40,
-  tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE)
+communityPGLMM.binary(
+  formula,
+  data = list(),
+  family = "binomial",
+  sp = NULL,
+  site = NULL,
+  random.effects = list(),
+  REML = TRUE,
+  s2.init = 0.25,
+  B.init = NULL,
+  reltol = 10^-5,
+  maxit = 40,
+  tol.pql = 10^-6,
+  maxit.pql = 200,
+  verbose = FALSE
+)
 
 communityPGLMM.binary.LRT(x, re.number = 0, ...)
 
-communityPGLMM.matrix.structure(formula, data = list(),
-  family = "binomial", sp = NULL, site = NULL,
-  random.effects = list(), ss = 1)
+communityPGLMM.matrix.structure(
+  formula,
+  data = list(),
+  family = "binomial",
+  sp = NULL,
+  site = NULL,
+  random.effects = list(),
+  ss = 1
+)
 
-\method{summary}{communityPGLMM}(object, digits = max(3,
-  getOption("digits") - 3), ...)
+\method{summary}{communityPGLMM}(object, digits = max(3, getOption("digits") - 3), ...)
 
-\method{plot}{communityPGLMM}(x, digits = max(3, getOption("digits") -
-  3), ...)
+\method{plot}{communityPGLMM}(x, digits = max(3, getOption("digits") - 3), ...)
 
 communityPGLMM.predicted.values(x, show.plot = TRUE, ...)
 }

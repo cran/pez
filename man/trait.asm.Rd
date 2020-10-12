@@ -4,8 +4,14 @@
 \alias{trait.asm}
 \title{Produces simulated communities based on species attributes}
 \usage{
-trait.asm(a, m = 1000, meanSR = NULL, interval = c(0.001, 10),
-  exponential = TRUE, Pscale = 1)
+trait.asm(
+  a,
+  m = 1000,
+  meanSR = NULL,
+  interval = c(0.001, 10),
+  exponential = TRUE,
+  Pscale = 1
+)
 }
 \arguments{
 \item{a}{species attributes (e.g., traits like body size)}

@@ -9,9 +9,16 @@
 \usage{
 sim.bd.phy(speciate = 0.1, extinction = 0.025, time.steps = 20)
 
-sim.bd.tr.phy(speciate = 0.1, extinction = 0.025, time.steps = 20,
-  tr.range = c(0, 1), sp.tr = 2, ext.tr = 1, tr.walk = 0.2,
-  tr.wrap = TRUE)
+sim.bd.tr.phy(
+  speciate = 0.1,
+  extinction = 0.025,
+  time.steps = 20,
+  tr.range = c(0, 1),
+  sp.tr = 2,
+  ext.tr = 1,
+  tr.walk = 0.2,
+  tr.wrap = TRUE
+)
 
 edge2phylo(edge, s, e = numeric(0), el = NA, t = NULL)
 }

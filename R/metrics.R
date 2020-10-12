@@ -31,11 +31,9 @@
 #' each metric, * indicates a function that's essentially written in
 #' \code{\link{picante}}. The Pagel family of measures are also fairly
 #' trivial wrapper around \code{\link{caper}} code, functional
-#' dissimilarity \code{\link{FD}} code, \code{gamma} \code{\link{ape}}
-#' code, and \code{colless}
-#' \code{\link[apTreeshape:colless]{apTreeshape}} code. I can't demand
-#' it, but I would be grateful if you would cite these authors when
-#' using these wrappers.
+#' dissimilarity \code{\link{FD}} code, \code{gamma}, and \code{\link{ape}}
+#' code. I can't demand it, but I would be grateful if you would cite these
+#' authors when using these wrappers.
 #'
 #' The \code{\link{pez.shape}}, \code{\link{pez.evenness}},
 #' \code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
@@ -84,27 +82,10 @@
 #' "independentswap". These correspond to the null models available in
 #' \code{\link{picante}}; only \code{d} does not use these null models
 #' @param ... ignored
-#' @importFrom apTreeshape colless tipsubtree
-#' @references \code{colless} Colless D.H. (1982). Review of
-#' phylogenetics: the theory and practice of phylogenetic
-#' systematics. Systematic Zoology, 31, 100-104.
-#' @export
-#' @rdname pez.metrics
-#' @name pez.metrics
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites)
 #' .psv(data)
-#' @export
-.colless <- function(x, ...)
-{
-    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    output <- numeric(nrow(x$comm))
-    for(i in seq(nrow(x$comm)))
-        output[i] <- colless(as.treeshape(drop_tip(x$phy, colnames(x$comm)[x$comm[i,]==0])))
-    names(output) <- rownames(x$comm)
-    return(output)
-}
 #' @importFrom picante pd evol.distinct
 #' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
 #' Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
@@ -260,7 +241,6 @@
 #' phylogenies. _Proceedings of the Royal Society of London. Series
 #' B. Biological Sciences 267: 2267--2272.
 #' @importFrom ape gammaStat
-#' @importFrom apTreeshape as.treeshape
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -279,9 +259,7 @@
         }
     }
     
-    tree.shape <- as.treeshape(x$phy)
-    nams <- tree.shape$names
-    return(apply(x$comm, 1, ..gamma, x$phy, nams))
+    return(apply(x$comm, 1, ..gamma, x$phy, x$phy$tip.label))
 }
 
 #' @importFrom ape cophenetic.phylo

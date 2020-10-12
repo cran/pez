@@ -7,7 +7,6 @@
 #' @docType data
 #' @aliases invert.traits invert.tree river.env river.sites
 #' @keywords datasets
-#' @usage laja
 #' @format \code{laja} contains a \code{\link{phylo}} object, a
 #' dataframe of sites-by-taxa, a dataframe of sites-by-environment,
 #' and a dataframe of traits
@@ -16,6 +15,7 @@
 #' phylogenetic structure of prey communities. Oecologia, 173,
 #' 997-1007.
 #' @author M.R. Helmus
+#' @usage data(laja)
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)

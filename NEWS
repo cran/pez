@@ -1,3 +1,7 @@
+2020-10-12	Version 1.2-2
+
+* Removed apTreeshape as dependency (and so Colless' index) at CRAN's request
+
 2020-07-26	Version 1.2-1
 
 * DESCRIPTION - formatR added to suggests for vignettes (at CRAN's request)

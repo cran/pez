@@ -7,12 +7,12 @@
 #'
 #' Most of these metrics do not involve comparison with some kind of
 #' evolutionary-derived expectation for phylogenetic shape. Those that
-#' do, however, such as PSV or Colless' index, make no sense unless
-#' applied to a phylogenetic distance matrix - their null expectation
-#' *requires* it. Using square-rooted distance matrices, or distance
-#' matrices that incorporate trait information, can be an excellent
-#' thing to do, but (for the above reasons), \code{pez} won't give you
-#' an answer for metrics for which WDP thinks it makes no
+#' do, however, such as PSV, make no sense unless applied to a
+#' phylogenetic distance matrix - their null expectation *requires*
+#' it. Using square-rooted distance matrices, or distance matrices
+#' that incorporate trait information, can be an excellent thing to
+#' do, but (for the above reasons), \code{pez} won't give you an
+#' answer for metrics for which WDP thinks it makes no
 #' sense. \code{pd}, \code{eed} & \code{hed} can (...up to you whether
 #' you should!...) be used with a square-rooted distance matrix, but
 #' the results *will always be wrong* if you do not have an
@@ -83,9 +83,6 @@
 #' Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation
 #' and phylogenetic diversity. Biological Conservation, 61, 1-10.
-#' @references \code{colless} Colless D.H. (1982). Review of
-#' phylogenetics: the theory and practice of phylogenetic
-#' systematics. Systematic Zoology, 31, 100-104.
 #' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
 #' macro-evolutionary models using incomplete molecular
 #' phylogenies. _Proceedings of the Royal Society of London. Series
@@ -153,17 +150,15 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       dist <- cophenetic(data$phy)
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .vpd, .vntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "vpd", "vngtd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
+  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .vpd, .vntd, .mipd, .innd, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "vpd", "vngtd", "mipd", "innd", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)
-      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]
+      functions <- functions[!names(functions) %in% c("psv", "psr", "gamma", "eed", "hed")]
   if(traitgram == TRUE)
-      functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed", "scheiner")]
+      functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "gamma", "eed", "hed", "scheiner")]
   if(ext.dist == TRUE)
-      functions <- functions[!names(functions) %in% c("pd", "psv", "psr", "colless", "gamma", "eed", "hed", "scheiner")]
-  if(!is.binary.phylo(data$phy) & "colless" %in% names(functions))
-      warning("Cannot compute Colless' index with non-binary tree")
+      functions <- functions[!names(functions) %in% c("pd", "psv", "psr", "gamma", "eed", "hed", "scheiner")]
   output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, which.eigen=which.eigen), silent=TRUE))
   
   #Clean up output and return

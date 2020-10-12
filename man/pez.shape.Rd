@@ -4,8 +4,16 @@
 \alias{pez.shape}
 \title{Calculate (phylogenetic) shape: examine assemblage composition}
 \usage{
-pez.shape(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, which.eigen = 1, quick = TRUE, q = 1e-04)
+pez.shape(
+  data,
+  sqrt.phy = FALSE,
+  traitgram = NULL,
+  traitgram.p = 2,
+  ext.dist = NULL,
+  which.eigen = 1,
+  quick = TRUE,
+  q = 1e-04
+)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
@@ -65,12 +73,12 @@ are provided to calculate these metrics using species traits.
 \details{
 Most of these metrics do not involve comparison with some kind of
 evolutionary-derived expectation for phylogenetic shape. Those that
-do, however, such as PSV or Colless' index, make no sense unless
-applied to a phylogenetic distance matrix - their null expectation
-*requires* it. Using square-rooted distance matrices, or distance
-matrices that incorporate trait information, can be an excellent
-thing to do, but (for the above reasons), \code{pez} won't give you
-an answer for metrics for which WDP thinks it makes no
+do, however, such as PSV, make no sense unless applied to a
+phylogenetic distance matrix - their null expectation *requires*
+it. Using square-rooted distance matrices, or distance matrices
+that incorporate trait information, can be an excellent thing to
+do, but (for the above reasons), \code{pez} won't give you an
+answer for metrics for which WDP thinks it makes no
 sense. \code{pd}, \code{eed} & \code{hed} can (...up to you whether
 you should!...) be used with a square-rooted distance matrix, but
 the results *will always be wrong* if you do not have an
@@ -111,10 +119,6 @@ Naturalist, 169, E68-E83.
 
 \code{PD} Faith D.P. (1992). Conservation evaluation
 and phylogenetic diversity. Biological Conservation, 61, 1-10.
-
-\code{colless} Colless D.H. (1982). Review of
-phylogenetics: the theory and practice of phylogenetic
-systematics. Systematic Zoology, 31, 100-104.
 
 \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
 macro-evolutionary models using incomplete molecular

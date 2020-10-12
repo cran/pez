@@ -4,11 +4,20 @@
 \alias{fibre.plot}
 \title{\code{fibre.plot} (fibrously) plots a phylogeny}
 \usage{
-fibre.plot(tree, gif, focal, frames = 60,
+fibre.plot(
+  tree,
+  gif,
+  focal,
+  frames = 60,
   colours = colorRampPalette(c("blue", "black", "red")),
   f.colours = colorRampPalette(c("darkgreen", "lightgreen")),
-  pca = NULL, clade.mat = NULL, delay = 0.2, side.tree = TRUE,
-  width = 600, height = 600)
+  pca = NULL,
+  clade.mat = NULL,
+  delay = 0.2,
+  side.tree = TRUE,
+  width = 600,
+  height = 600
+)
 }
 \arguments{
 \item{tree}{a phylogeny (of class phylo) you wish to plot}

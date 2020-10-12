@@ -2,7 +2,6 @@
 % Please edit documentation in R/metrics.R
 \name{pez.metrics}
 \alias{pez.metrics}
-\alias{.colless}
 \alias{.hed}
 \alias{.eed}
 \alias{.psv}
@@ -47,8 +46,6 @@
 \alias{.bed}
 \title{Phylogenetic and functional trait metrics within pez}
 \usage{
-.colless(x, ...)
-
 .hed(x, ...)
 
 .eed(x, na.rm = TRUE, ...)
@@ -113,23 +110,59 @@
 
 .d(x, permute = 1000, ...)
 
-.ses.mpd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.mpd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
-.ses.mntd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.mntd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
-.ses.vpd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.vpd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
-.ses.vntd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.vntd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
-.ses.mipd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.mipd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
-.ses.innd(x, dist = NULL, null.model = "taxa.labels",
-  abundance.weighted = FALSE, permute = 1000, ...)
+.ses.innd(
+  x,
+  dist = NULL,
+  null.model = "taxa.labels",
+  abundance.weighted = FALSE,
+  permute = 1000,
+  ...
+)
 
 .mipd(x, dist = NULL, abundance.weighted = FALSE, ...)
 
@@ -216,11 +249,9 @@ wrappers around functions in other packages. In the citations for
 each metric, * indicates a function that's essentially written in
 \code{\link{picante}}. The Pagel family of measures are also fairly
 trivial wrapper around \code{\link{caper}} code, functional
-dissimilarity \code{\link{FD}} code, \code{gamma} \code{\link{ape}}
-code, and \code{colless}
-\code{\link[apTreeshape:colless]{apTreeshape}} code. I can't demand
-it, but I would be grateful if you would cite these authors when
-using these wrappers.
+dissimilarity \code{\link{FD}} code, \code{gamma}, and \code{\link{ape}}
+code. I can't demand it, but I would be grateful if you would cite these
+authors when using these wrappers.
 
 The \code{\link{pez.shape}}, \code{\link{pez.evenness}},
 \code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
@@ -246,10 +277,6 @@ data <- comparative.comm(invert.tree, river.sites)
 .psv(data)
 }
 \references{
-\code{colless} Colless D.H. (1982). Review of
-phylogenetics: the theory and practice of phylogenetic
-systematics. Systematic Zoology, 31, 100-104.
-
 \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
 Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
 T.H. (2010). Phylogenetic diversity metrics for ecological

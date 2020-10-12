@@ -4,9 +4,18 @@
 \alias{plot.comparative.comm}
 \title{Dot-plots of community presence/absence or abundance}
 \usage{
-\method{plot}{comparative.comm}(x, sites = NULL, abundance = FALSE,
-  pch = 20, dot.cex = NULL, site.col = "black", fraction = 3,
-  x.increment = NULL, show.tip.label = FALSE, ...)
+\method{plot}{comparative.comm}(
+  x,
+  sites = NULL,
+  abundance = FALSE,
+  pch = 20,
+  dot.cex = NULL,
+  site.col = "black",
+  fraction = 3,
+  x.increment = NULL,
+  show.tip.label = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{\link{comparative.comm}} object}
