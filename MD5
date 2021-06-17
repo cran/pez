@@ -1,6 +1,6 @@
-15f5dd0a7c5489e8df84df1e6a63fa42 *DESCRIPTION
+9c09d17df53c2b6e042df283db47a82f *DESCRIPTION
 564cf27607404019e63ab6ec32e6bf36 *NAMESPACE
-0a0118e2bc4b013ecaf3713450542b14 *NEWS
+6894d97df8ebe3ad362ee958d5692d6a *NEWS
 c24d46e768bb0c261f6f1fb73365680f *R/comparative.comm.R
 d85614ae96912b917ea8822ddbc445fb *R/dispersion.R
 a1294fa676387ea6976e5cecba86b255 *R/dissimilarity.R
@@ -27,15 +27,15 @@ ad6fd2075af58bc7bf3b82bc14fad0fc *R/metapop.sim.R
 1f1bf6be3950386e1cef8b854dfebcce *R/shape.R
 30cdc5db2e87b9c020e26691c2c38332 *R/traits.R
 b64e5ace1d81d8ea2dfc0f225404b1bf *R/utility.R
-2eba3d321eb86ea96bdc7578bc0a808b *build/vignette.rds
+acbf3a37ff02c2a9acacb02e5c52239a *build/vignette.rds
 f2267a417acfd443e9f2254232f5c0ef *data/laja.RData
 179c04d013d0b48fc784fae6c21e9f83 *inst/CITATION
 2593d4e7104844c09c5f07fd2649512f *inst/doc/pez-intro.R
 e3104a27fc34e31a4fda91a59aba8d41 *inst/doc/pez-intro.Rnw
-b485c8cf8618d3e7434a71a86403384d *inst/doc/pez-intro.pdf
-3d4ce437f86015d2bb4e3b06757abe4d *inst/doc/pez-pglmm-overview.R
-6037116bdc1f4479dccf1273a6857ae0 *inst/doc/pez-pglmm-overview.Rnw
-37ee8dd8461a6b5525a5df4768632253 *inst/doc/pez-pglmm-overview.pdf
+35ead10eb0fb61916f268c95121971ba *inst/doc/pez-intro.pdf
+e8157b4c8e7e27c42001c91d5c7876e4 *inst/doc/pez-pglmm-overview.R
+3d69c83111ee3faebf97f4885fcbd9dd *inst/doc/pez-pglmm-overview.Rnw
+ad93a854e85986722271d76048b5e9cf *inst/doc/pez-pglmm-overview.pdf
 b5efa6b812629ddecdf3a5c80203b327 *inst/tests/Rplots.pdf
 b66b2b80d057e008c6c13ad64e771e92 *inst/tests/test_comparative.comm.R
 a89cc346ba5902356174e4d7e39f2f00 *inst/tests/test_dist.R
@@ -84,4 +84,4 @@ b482a0a94f35a1addfc209ad5558ecaa *man/trait.asm.Rd
 59063174423a7991d7d8731d682e351d *man/traitgram.cc.Rd
 12f268dfa61fe2d3569f523e2dab7aef *vignettes/fingerprint_regression.png
 e3104a27fc34e31a4fda91a59aba8d41 *vignettes/pez-intro.Rnw
-6037116bdc1f4479dccf1273a6857ae0 *vignettes/pez-pglmm-overview.Rnw
+3d69c83111ee3faebf97f4885fcbd9dd *vignettes/pez-pglmm-overview.Rnw

@@ -1,4 +1,5 @@
 ## ----include=FALSE--------------------
+set.seed(123456)
 require(pez)
 options(width=40)
 

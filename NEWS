@@ -1,3 +1,8 @@
+2021-06-14	Version 1.2-3
+
+* PGLMM vignette generates a warning (sometimes) under Linux; used set.seed
+  to remove uncertainty
+
 2020-10-12	Version 1.2-2
 
 * Removed apTreeshape as dependency (and so Colless' index) at CRAN's request
