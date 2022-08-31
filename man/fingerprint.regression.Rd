@@ -84,9 +84,8 @@ While the term `fingerprint regression' is new to pez, the method
 is very similar to that employed in Cavender-Bares et al. 2004
 Figure 6. For each trait, the phylogenetic inertia of species%
 traits is regressed against their co-occurrence in the community
-matrix. Note that Pagel's \eqn{$\lambda$}{lambda},
-\eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa}, and Blomberg's K,
-can be used, unlike the original where a mantel test was
+matrix. Note that Pagel's lambda, delta, and kappa, and Blomberg's
+K, can be used, unlike the original where a mantel test was
 employed. Moreover, note also that Pianka's distance (as described
 in the manuscript) is used to measure species overlap.
 }

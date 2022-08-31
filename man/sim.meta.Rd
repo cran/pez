@@ -40,15 +40,15 @@ cell will migrate to another grid cell each timestep (i.e., 10
 cells occuped by a species --> 10*\code{p.migrate} chance of
 migration)}
 
-\item{env.lam}{\eqn{$\lambda$}{lambda} value for Poisson
+\item{env.lam}{lambda value for Poisson
 distribution used to distribute environmental quality; essentially
 the carrying capacity (for each species separately) for that cell}
 
-\item{abund.lam}{\eqn{$\lambda$}{lambda} value for Poisson
+\item{abund.lam}{lambda value for Poisson
 distribution used to distribute initial abundances and abundance
 after migration}
 
-\item{stoch.lam}{\eqn{$\lambda$}{lambda} value for Poisson
+\item{stoch.lam}{lambda value for Poisson
 distribution of noise added to the next step abundance
 calculation. With equal chance, this is taken as either a positive
 or a negative number (see details if you're confused as to why this

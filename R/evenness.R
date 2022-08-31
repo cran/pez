@@ -24,38 +24,38 @@
 #' this bug is welcome.
 #' @param data \code{\link{comparative.comm}} object
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
-#' distance matrix will be square-rooted; specifying TRUE will force
-#' the square-root transformation on phylogenetic distance matrices
-#' (in the spirit of Leitten and Cornwell, 2014). See `details' for
-#' details about different metric calculations when a distance matrix
-#' is used.
+#'   distance matrix will be square-rooted; specifying TRUE will force
+#'   the square-root transformation on phylogenetic distance matrices
+#'   (in the spirit of Leitten and Cornwell, 2014). See `details' for
+#'   details about different metric calculations when a distance
+#'   matrix is used.
 #' @param traitgram If not NULL (default), a number to be passed to
-#' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
-#' causing analysis on a distance matrix reflecting both traits and
-#' phylogeny (0-->only phylogeny, 1--> only traits; see
-#' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{pez.eveness} iterates across them and returns a \code{data.frame}
-#' with coefficients from each iteration. See `details' for details
-#' about different metric calculations when a distance matrix is used.
+#'   \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+#'   causing analysis on a distance matrix reflecting both traits and
+#'   phylogeny (0-->only phylogeny, 1--> only traits; see
+#'   \code{funct.phylo.dist}). If a vector of numbers is given,
+#'   \code{pez.eveness} iterates across them and returns a
+#'   \code{data.frame} with coefficients from each iteration. See
+#'   `details' for details about different metric calculations when a
+#'   distance matrix is used.
 #' @param traitgram.p A value for `p' to be used in conjunction with
-#' \code{traitgram} when calling \code{funct.phylo.dist}.
+#'   \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ext.dist Supply an external species-level distance matrix
-#' for use in calculations. See `details' for comments on the use of
-#' distance matrices in different metric calculations.
+#'   for use in calculations. See `details' for comments on the use of
+#'   distance matrices in different metric calculations.
 #' @param quick Only calculate metrics which are quick to calculate
-#' (default: TRUE); setting to FALSE will also calculate
-#' \code{fd.dist} and the Pagel transformations
-#' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
-#' \eqn{$\kappa$}{kappa}).
+#'   (default: TRUE); setting to FALSE will also calculate
+#'   \code{fd.dist} and the Pagel transformations (lambda, delta,
+#'   kappa).
 #' @param q value for \emph{q} in \code{scheiner} (default 1)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
-#' phylogenetic distance matrix if no trait data are available, or if
-#' you specify \code{sqrt.phy}. It is not calculated by default
-#' because it generates warning messsages (which WDP is loathe to
-#' suppress) which are related to the general tendency for a low rank
-#' of phylogenetic distance matrices. Much ink has been written about
-#' this, and in par this problem is why the \code{eigen.sum} measure
-#' came to be suggested.
+#'   phylogenetic distance matrix if no trait data are available, or
+#'   if you specify \code{sqrt.phy}. It is not calculated by default
+#'   because it generates warning messsages (which WDP is loathe to
+#'   suppress) which are related to the general tendency for a low
+#'   rank of phylogenetic distance matrices. Much ink has been written
+#'   about this, and in par this problem is why the \code{eigen.sum}
+#'   measure came to be suggested.
 #'
 #' Some of these metrics can cause (inconsequential) warnings if given
 #' assemblages with only one species/individual in them, and return

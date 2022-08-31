@@ -1,3 +1,8 @@
+2020-08-31	Version 1.2-4
+
+* Removed '$' from entries in help files following updates to how R
+  processes equations in help-file entries in R >=4.2.
+
 2021-06-14	Version 1.2-3
 
 * PGLMM vignette generates a warning (sometimes) under Linux; used set.seed

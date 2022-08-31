@@ -17,11 +17,11 @@
 #' species (\code{sp.tr}, \code{ext.tr}). When a speciation event
 #' happens, the two daughters split evenly about the ancestor's trait
 #' value, taking values half-way to whatever the nearest species'
-#' value is. To be precise: \eqn{$p(speciate)_i = speciate_i + sp.tr
-#' \times min(trait distance)$}{p(speciate) = speciate +
-#' sp.tr*min.tr.dist}, \eqn{$p(extinct)_i = exinction_i + ext.tr
-#' \times min(trait distance)$}{p(extinct) = extinction +
-#' ext.tr*min.tr.dist}, where \eqn{$i$}{i} denotes each species.
+#' value is. To be precise: \eqn{p(speciate)_i = speciate_i + sp.tr
+#' \times min(trait distance)}{p(speciate) = speciate +
+#' sp.tr*min.tr.dist}, \eqn{p(extinct)_i = exinction_i + ext.tr
+#' \times min(trait distance)}{p(extinct) = extinction +
+#' ext.tr*min.tr.dist}, where \eqn{i}{i} denotes each species.
 #'
 #' \code{edge2phylo} is an internal function for the
 #' \code{\link{sim.phy}} and \code{\link{sim.meta}} function families,

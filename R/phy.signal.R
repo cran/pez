@@ -2,21 +2,26 @@
 #' 
 #' @param data \code{\link{comparative.comm}} object
 #' @param method what kind of signal to calculate, one of Pagel's
-#' \eqn{$\lambda$}{lambda} (default), \eqn{$\delta$}{delta}, and
-#' \eqn{$\kappa$}{kappa}, or Blomberg's K.
+#'   lambda(default), delta, and kappa, or Blomberg's K.
 #' @details Phylogenetic `signal' is one of those concepts that is
-#' said a lot in community ecology, but some do not full consider its
-#' meaning. Think carefully before rushing to report a value whether:
-#' (1) it makes sense to assess phylogenetic `signal' in your
-#' datasets, and (2) what the phrase `phylogenetic signal' actually
-#' means. This code makes use of \code{caper::\link{pgls}} to get
-#' estimates of fit; alternatives that offer more flexibility exist
-#' (see below).
-#' @return Named numeric vector, where each element is a trait or community.
+#'   said a lot in community ecology, but some do not full consider
+#'   its meaning. Think carefully before rushing to report a value
+#'   whether: (1) it makes sense to assess phylogenetic `signal' in
+#'   your datasets, and (2) what the phrase `phylogenetic signal'
+#'   actually means. This code makes use of \code{caper::\link{pgls}}
+#'   to get estimates of fit; alternatives that offer more flexibility
+#'   exist (see below).
+#' @return Named numeric vector, where each element is a trait or
+#'   community.
 #' @author Will Pearse, Jeannine Cavender-Bares
-#' @references Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
-#' @references R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparative data: A test and review of evidence. American Naturalist, 160:712-726, 2002.
-#' @references Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
+#' @references Blomberg S.P., Garland T. & Ives A.R. Testing for
+#'   phylogenetic signal in comparative data: behavioral traits are
+#'   more labile. Evolution 57(4): 717--745.
+#' @references R. P. Freckleton, P. H. Harvey, and
+#'   M. Pagel. Phylogenetic analysis and comparative data: A test and
+#'   review of evidence. American Naturalist, 160:712-726, 2002.
+#' @references Mark Pagel (1999) Inferring the historical patterns of
+#'   biological evolution. Nature 6756(401): 877--884.
 #' @seealso fitContinuous fitDiscrete pgls phylosignal
 #' @examples
 #' data(laja)

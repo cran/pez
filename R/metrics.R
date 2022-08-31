@@ -326,7 +326,7 @@
         data <- x$data
     if(is.matrix(method) | is.data.frame(method))
         data <- method
-    if(class(method)=="dist")
+    if(inherits(method, "dist"))
         data <- method
     output <- capture.output(dbFD(data, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
     coefs <- with(output, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
