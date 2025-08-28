@@ -19,7 +19,7 @@
 #' community data, one of: \code{taxa.labels} (DEFAULT),
 #' \code{richness}, \code{frequency}, \code{sample.pool},
 #' \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
-#' implemented in \code{\link{picante}})
+#' implemented in \CRANpkg{picante})
 #' @param eco.permute number of permutations for ecological null model
 #' (\code{eco.rnd}); default 1000
 #' @param eco.method how to compare distance matrices (only the lower

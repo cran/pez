@@ -115,8 +115,4 @@ sim.meta scape
 }
 \author{
 Will Pearse
-
-Will Pearse
-
-Will Pearse
 }

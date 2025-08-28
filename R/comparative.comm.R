@@ -11,7 +11,7 @@
 #' @param phy phylogeny (in \code{\link[ape:phylo]{phylo}} format) of
 #' species
 #' @param comm community \code{matrix} (as used in
-#' \code{\link{vegan}}) with species as columns and rows as
+#' \CRANpkg{vegan}) with species as columns and rows as
 #' communities. Must contain \code{rownames} and \code{colnames}; NAs
 #' are not checked for but probably unwise.
 #' @param traits \code{data.frame} of species traits, with
@@ -219,7 +219,7 @@ print.comparative.comm <- function(x, ...){
 #' @note As described in \code{\link{comparative.comm}}, each
 #' \code{\link{comparative.comm}} object contains a phylogeny
 #' (\code{$phy}) and a site-by-species community matrix (as used in
-#' \code{\link{vegan}}). Optionally, it may contain a
+#' \CRANpkg{vegan}). Optionally, it may contain a
 #' \code{data.frame} of trait data (each row a species, each column a
 #' trait ) *called \code{data}* for compatibility with
 #' \code{\link[caper:comparative.data]{comparative.data}}.

@@ -39,7 +39,7 @@ fingerprint.regression(
 community data, one of: \code{taxa.labels} (DEFAULT),
 \code{richness}, \code{frequency}, \code{sample.pool},
 \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
-implemented in \code{\link{picante}})}
+implemented in \CRANpkg{picante})}
 
 \item{eco.method}{how to compare distance matrices (only the lower
 triangle;), one of: \code{\link{lm}} (linear regression),

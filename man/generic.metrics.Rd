@@ -10,8 +10,8 @@
 generic.null(
   data,
   metrics,
-  null.model = c("taxa.labels", "richness", "frequency", "sample.pool",
-    "phylogeny.pool", "independentswap", "trialswap", "trait.asm"),
+  null.model = c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool",
+    "independentswap", "trialswap", "trait.asm"),
   permute = 1000,
   comp.fun = .ses,
   ...
@@ -22,8 +22,8 @@ generic.null(
 .metric.null(
   data,
   metrics,
-  null.model = c("taxa.labels", "richness", "frequency", "sample.pool",
-    "phylogeny.pool", "independentswap", "trialswap", "trait.asm"),
+  null.model = c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool",
+    "independentswap", "trialswap", "trait.asm"),
   permute = 1000,
   trait = -1,
   ...
@@ -40,7 +40,7 @@ see \link{pez.metrics} for a list of them.}
 \item{null.model}{one of "taxa.labels", "richness", "frequency",
 "sample.pool", "phylogeny.pool", "independentswap", or
 "independentswap". These correspond to the null models available in
-\code{\link{picante}}}
+\CRANpkg{picante}}
 
 \item{permute}{number of null permutations to perform (default
 1000)}

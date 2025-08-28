@@ -59,14 +59,14 @@ eco.trait.regression(
 community data, one of: \code{taxa.labels} (DEFAULT),
 \code{richness}, \code{frequency}, \code{sample.pool},
 \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
-implemented in \code{\link{picante}})}
+implemented in \CRANpkg{picante})}
 
 \item{permute}{the number of null permutations to perform (DEFAULT
 0)}
 
 \item{method}{how to compare distance matrices (only the lower
 triangle;), one of: \code{\link{lm}} (linear regression),
-\code{quantile} (DEFAULT; \code{quantreg::\link{rq}}),
+\code{quantile} (DEFAULT; \code{\link[quantreg:rq]{rq}}),
 \code{mantel} (\code{\link[vegan:mantel]{mantel}})}
 
 \item{altogether}{use distance matrix based on all traits (default

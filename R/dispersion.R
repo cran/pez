@@ -31,7 +31,7 @@
 #' @param null.model one of "taxa.labels", "richness", "frequency",
 #' "sample.pool", "phylogeny.pool", "independentswap", or
 #' "independentswap". These correspond to the null models available in
-#' \code{\link{picante}}; only \code{d} does not use these null models
+#' \CRANpkg{picante}; only \code{d} does not use these null models
 #' @param abundance Whether to use abundance-weighted forms of these
 #' metrics (default: FALSE). D, which is presence/absence only, and so
 #' will not be calculated when \code{TRUE}.

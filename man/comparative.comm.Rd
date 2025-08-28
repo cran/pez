@@ -22,7 +22,7 @@ comparative.comm(
 species}
 
 \item{comm}{community \code{matrix} (as used in
-\code{\link{vegan}}) with species as columns and rows as
+\CRANpkg{vegan}) with species as columns and rows as
 communities. Must contain \code{rownames} and \code{colnames}; NAs
 are not checked for but probably unwise.}
 

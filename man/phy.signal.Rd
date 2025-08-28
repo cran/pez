@@ -25,7 +25,7 @@ Phylogenetic `signal' is one of those concepts that is
   its meaning. Think carefully before rushing to report a value
   whether: (1) it makes sense to assess phylogenetic `signal' in
   your datasets, and (2) what the phrase `phylogenetic signal'
-  actually means. This code makes use of \code{caper::\link{pgls}}
+  actually means. This code makes use of \code{\link[caper]{pgls}}
   to get estimates of fit; alternatives that offer more flexibility
   exist (see below).
 }

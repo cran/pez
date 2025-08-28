@@ -1584,6 +1584,8 @@ summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") -
 	cat("\n")
 }
 
+#' @rdname pglmm
+#' @method print communityPGLMM
 print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
 	summary.communityPGLMM(x, digits = digits)
 }

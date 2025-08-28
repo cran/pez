@@ -122,7 +122,7 @@ risk of things getting unsynchronised.
 As described in \code{\link{comparative.comm}}, each
 \code{\link{comparative.comm}} object contains a phylogeny
 (\code{$phy}) and a site-by-species community matrix (as used in
-\code{\link{vegan}}). Optionally, it may contain a
+\CRANpkg{vegan}). Optionally, it may contain a
 \code{data.frame} of trait data (each row a species, each column a
 trait ) *called \code{data}* for compatibility with
 \code{\link[caper:comparative.data]{comparative.data}}.

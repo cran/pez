@@ -7,7 +7,7 @@
 #' @docType data
 #' @aliases invert.traits invert.tree river.env river.sites
 #' @keywords datasets
-#' @format \code{laja} contains a \code{\link{phylo}} object, a
+#' @format \code{laja} contains a \code{\link[ape]{phylo}} object, a
 #' dataframe of sites-by-taxa, a dataframe of sites-by-environment,
 #' and a dataframe of traits
 #' @references Helmus M., Mercado-Silva N. & Vander Zanden

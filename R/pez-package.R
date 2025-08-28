@@ -13,9 +13,8 @@
 #' assemblages, traits, and phylogenies (\code{\link{scape}},
 #' \code{\link{sim.meta.comm}}).
 #' 
-#' @docType package
 #' @name pez
-#' @aliases pez package-pez pez-package
+#' @aliases pez package-pez pez-package _PACKAGE
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 #' @examples

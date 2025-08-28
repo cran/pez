@@ -26,7 +26,8 @@ scape(
 )
 }
 \arguments{
-\item{tree}{\code{\link{phylo}} object}
+\item{tree}{phylogeny (in \code{\link[ape:phylo]{phylo}} format) of
+species}
 
 \item{scape.size}{edge dimension of square landscape}
 
@@ -65,7 +66,7 @@ increase to get more variation in center values across species}
 increase to get more variation in range sizes across gradients}
 
 \item{rho}{Grafen branch adjustment of phylogenetic tree see
-\code{\link{corGrafen}}}
+\code{\link[ape]{corGrafen}}}
 
 \item{th}{probability threshold 10^-th above which species are
 considered present at a site}
@@ -109,7 +110,7 @@ stabilizing selection. Values of g=1 indicate no stabilizing
 selection and correspond to the Brownian motion model of evolution;
 0<g<1 represents stabilizing selection; and g>1 corresponds to
 disruptive selection where phylogenetic signal for the supplied
-tree is amplified. See \code{\link{corBlomberg}}.  Communities are
+tree is amplified. See \code{\link[ape]{corBlomberg}}.  Communities are
 simulated along two gradients where the positions along those
 gradients, \code{g.center} and range sizes \code{g.range}, can
 exhibit phylogenetic signal. Phylogenetic attraction is simulated

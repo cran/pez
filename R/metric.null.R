@@ -36,7 +36,7 @@
 #' @param null.model one of "taxa.labels", "richness", "frequency",
 #' "sample.pool", "phylogeny.pool", "independentswap", or
 #' "independentswap". These correspond to the null models available in
-#' \code{\link{picante}}
+#' \CRANpkg{picante}
 #' @param comp.fun comparison function to compare observed values with
 #' null values. Default is \code{\link{.ses}}; this is a Standard
 #' Effect Size (obs - mean)/SEmean. You may supply your own function;

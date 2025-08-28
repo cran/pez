@@ -1,9 +1,29 @@
 Package: pez
 Type: Package
 Title: Phylogenetics for the Environmental Sciences
-Version: 1.2-4
-Author: William D. Pearse, Marc W. Cadotte, Jeannine Cavender-Bares,
-    Anthony R. Ives, Caroline Tucker, Steve C. Walker, Matthew R. Helmus
+Version: 1.2-5
+Authors@R: c(person(given = c("William", "D."),
+                      family = "Pearse",
+                      role = c("aut", "cre"),
+                      email = "will.pearse@gmail.com"),
+               person(given = c("Marc", "W."),
+                      family = "Cadotte",
+                      role = "aut"),
+               person(given = "Jeannine",
+                      family = "Cavender-Bares",
+                      role = "aut"),
+               person(given = c("Anthony", "R."),
+                      family = "Ives",
+                      role = "aut"),
+               person(given = "Caroline",
+                      family = "Tucker",
+                      role = "aut"),
+               person(given = c("Steve", "C."),
+                      family = "Walker",
+                      role = "aut"),
+               person(given = c("Matthew", "R."),
+                      family = "Helmus",
+                      role = "aut"))
 Maintainer: William D. Pearse <will.pearse@gmail.com>
 Description: Eco-phylogenetic and community phylogenetic analyses.
     Keeps community ecological and phylogenetic data matched up and
@@ -23,8 +43,16 @@ Imports: caper (>= 0.5-2), picante (>= 1.6-2), quantreg (>= 5.05),
         1.0-12), Matrix (>= 1.1-4), methods (>= 3.1.0), animation (>=
         2.4-0), phytools (>= 0.6-60)
 Depends: ape (>= 3.1-4)
-RoxygenNote: 7.1.2
 NeedsCompilation: no
 Repository: CRAN
-Packaged: 2022-08-31 16:05:27 UTC; will
-Date/Publication: 2022-08-31 18:00:02 UTC
+Encoding: UTF-8
+RoxygenNote: 7.3.2
+Packaged: 2025-08-27 17:59:04 UTC; will
+Author: William D. Pearse [aut, cre],
+  Marc W. Cadotte [aut],
+  Jeannine Cavender-Bares [aut],
+  Anthony R. Ives [aut],
+  Caroline Tucker [aut],
+  Steve C. Walker [aut],
+  Matthew R. Helmus [aut]
+Date/Publication: 2025-08-28 17:00:02 UTC

@@ -2,7 +2,8 @@
 #' 
 #' \code{scape} simulates communities that are phylogenetically structured
 #' 
-#' @param tree \code{\link{phylo}} object
+#' @param tree phylogeny (in \code{\link[ape:phylo]{phylo}} format) of
+#' species
 #' @param scape.size edge dimension of square landscape
 #' @param g.center strength of phylogenetic signal in species range centers
 #' @param g.range strength of phylogenetic signal in species range sizes
@@ -25,7 +26,7 @@
 #' @param sd.range sd \code{\link{rnorm}} for the range sizes,
 #' increase to get more variation in range sizes across gradients
 #' @param rho Grafen branch adjustment of phylogenetic tree see
-#' \code{\link{corGrafen}}
+#' \code{\link[ape]{corGrafen}}
 #' @param th probability threshold 10^-th above which species are
 #' considered present at a site
 #' @details Simulates a landscape with species (i.e., tree tips)
@@ -37,7 +38,7 @@
 #' selection and correspond to the Brownian motion model of evolution;
 #' 0<g<1 represents stabilizing selection; and g>1 corresponds to
 #' disruptive selection where phylogenetic signal for the supplied
-#' tree is amplified. See \code{\link{corBlomberg}}.  Communities are
+#' tree is amplified. See \code{\link[ape]{corBlomberg}}.  Communities are
 #' simulated along two gradients where the positions along those
 #' gradients, \code{g.center} and range sizes \code{g.range}, can
 #' exhibit phylogenetic signal. Phylogenetic attraction is simulated

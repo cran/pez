@@ -9,7 +9,7 @@
 \alias{river.sites}
 \title{Macroinvertebrate samples from the Rio Laja of Mexico}
 \format{
-\code{laja} contains a \code{\link{phylo}} object, a
+\code{laja} contains a \code{\link[ape]{phylo}} object, a
 dataframe of sites-by-taxa, a dataframe of sites-by-environment,
 and a dataframe of traits
 }

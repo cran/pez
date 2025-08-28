@@ -237,9 +237,9 @@ plot.eco.xxx.regression.list <- function(x, ...){
 ##' Trim a phylogeny
 ##'
 ##' This is a weak wrapper around \code{ape}'s
-##' \code{\link{drop.tip}}. Importantly, if asked to drop no species
+##' \code{\link[ape]{drop.tip}}. Importantly, if asked to drop no species
 ##' from a phylogeny, it will just return the phylogeny (not an empty
-##' phylogeny, as \code{\link{drop.tip}}) will.
+##' phylogeny, as \code{\link[ape]{drop.tip}}) will.
 ##'
 ##' @param tree An \code{\link[ape:phylo]{phylo}} object
 ##' @param spp A vector of species (one, many, or none) to be removed

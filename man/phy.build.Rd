@@ -122,6 +122,4 @@ Kuhn, T. S., Mooers, A. O., & Thomas, G. H. (2011). A
 }
 \author{
 Will Pearse
-
-Will Pearse
 }

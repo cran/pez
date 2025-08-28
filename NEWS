@@ -1,3 +1,10 @@
+2025-08-27	Version 1.2-5
+
+* Updated help-file entries so that they linked to package entries in
+  a way compatible with CRAN's new requirements.
+* Updated CITATION and DESCRIPTION files for new author list
+  requirements.
+
 2020-08-31	Version 1.2-4
 
 * Removed '$' from entries in help files following updates to how R

@@ -8,6 +8,7 @@
 \alias{communityPGLMM.binary.LRT}
 \alias{communityPGLMM.matrix.structure}
 \alias{summary.communityPGLMM}
+\alias{print.communityPGLMM}
 \alias{plot.communityPGLMM}
 \alias{communityPGLMM.predicted.values}
 \title{Phylogenetic Generalised Linear Mixed Model for Community Data}
@@ -74,6 +75,8 @@ communityPGLMM.matrix.structure(
 )
 
 \method{summary}{communityPGLMM}(object, digits = max(3, getOption("digits") - 3), ...)
+
+\method{print}{communityPGLMM}(x, digits = max(3, getOption("digits") - 3), ...)
 
 \method{plot}{communityPGLMM}(x, digits = max(3, getOption("digits") - 3), ...)
 

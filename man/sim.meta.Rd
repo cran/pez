@@ -99,6 +99,4 @@ pays your money, you makes your choice.
 }
 \author{
 Will Pearse
-
-Will Pearse
 }

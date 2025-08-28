@@ -213,7 +213,7 @@ metrics}})}
 \item{null.model}{one of "taxa.labels", "richness", "frequency",
 "sample.pool", "phylogeny.pool", "independentswap", or
 "independentswap". These correspond to the null models available in
-\code{\link{picante}}; only \code{d} does not use these null models}
+\CRANpkg{picante}; only \code{d} does not use these null models}
 }
 \description{
 Using these functions, you can calculate any of the phylogenetic
@@ -247,9 +247,9 @@ the formula in the code for more information!
 Many (but not all) of these functions are fairly trivial
 wrappers around functions in other packages. In the citations for
 each metric, * indicates a function that's essentially written in
-\code{\link{picante}}. The Pagel family of measures are also fairly
-trivial wrapper around \code{\link{caper}} code, functional
-dissimilarity \code{\link{FD}} code, \code{gamma}, and \code{\link{ape}}
+\CRANpkg{picante}. The Pagel family of measures are also fairly
+trivial wrapper around \CRANpkg{caper} code, functional
+dissimilarity \CRANpkg{FD} code, \code{gamma}, and \CRANpkg{ape}
 code. I can't demand it, but I would be grateful if you would cite these
 authors when using these wrappers.
 
